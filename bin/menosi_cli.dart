@@ -145,11 +145,10 @@ import 'package:flutter/material.dart';
 import 'controllers/${pageName}_controller.dart';
 import 'package:get/get.dart';
 
-class ${_capitalize(pageName)}Screen extends StatelessWidget {
+class ${_capitalize(pageName)}Screen extends GetView<${_capitalize(pageName)}ControllerController> {
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(${_capitalize(pageName)}Controller());
-
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('${_capitalize(pageName)} Screen'),
