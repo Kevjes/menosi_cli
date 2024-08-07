@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'controllers/${pageName}_controller.dart';
 import 'package:get/get.dart';
 
-class ${capitalize(pageName)}Screen extends GetView<${capitalize(pageName)}ControllerController> {
+class ${capitalize(pageName)}Screen extends GetView<${capitalize(pageName)}Controller> {
   @override
   Widget build(BuildContext context) {
     
@@ -36,7 +36,7 @@ class ${capitalize(pageName)}Controller extends GetxController {
 String bindingTemplate(String pageName) {
   return '''
 import 'package:get/get.dart';
-import '../../presentation/enrollement/controllers/${pageName}_controller.dart';
+import '../../presentation/$pageName/controllers/${pageName}_controller.dart';
 
 class ${capitalize(pageName)}ControllerBinding extends Bindings {
   @override
@@ -49,8 +49,12 @@ class ${capitalize(pageName)}ControllerBinding extends Bindings {
 
 String routesTemplate(String featureName) {
   return '''
+import '../../../navigation/routes.dart';
+
 class ${capitalize(featureName)}Routes {
-  static const String HOME = '/${featureName}';
+  static const String _prefix = Routes.${featureName.toUpperCase()};
+
+  static const String HOME = '$featureName';
   // Add other routes here
 }
 ''';
@@ -59,14 +63,17 @@ class ${capitalize(featureName)}Routes {
 String navigationTemplate(String featureName) {
   return '''
 import 'package:get/get.dart';
-import '../presentation/views/${featureName}_screen.dart';
+import '../presentation/$featureName/${featureName}_screen.dart';
+import 'bindings/${featureName}_controller_binding.dart';
 import '${featureName}_routes.dart';
 
-class ${capitalize(featureName)}Nav {
+class ${capitalize(featureName)}Navigation {
+  static const String initialRoute = ${capitalize(featureName)}Routes.HOME;
   static List<GetPage> routes = [
     GetPage(
       name: ${capitalize(featureName)}Routes.HOME,
       page: () => ${capitalize(featureName)}Screen(),
+      binding: ${capitalize(featureName)}ControllerBinding(),
     ),
     // Add other routes here
   ];
@@ -77,7 +84,7 @@ class ${capitalize(featureName)}Nav {
 String injectionTemplate(String featureName) {
   return '''
 import 'package:get/get.dart';
-import '../../presentation/enrollement/presentation/controllers/${featureName}_controller.dart';
+import '../presentation/$featureName/controllers/${featureName}_controller.dart';
 
 class ${capitalize(featureName)}DependenciesInjection {
   static void init() {

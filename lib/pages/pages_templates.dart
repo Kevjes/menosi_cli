@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'controllers/${pageName}_controller.dart';
 import 'package:get/get.dart';
 
-class ${capitalize(pageName)}Screen extends GetView<${capitalize(pageName)}ControllerController> {
+class ${capitalize(pageName)}Screen extends GetView<${capitalize(pageName)}Controller> {
   @override
   Widget build(BuildContext context) {
     
@@ -37,7 +37,7 @@ class ${capitalize(pageName)}Controller extends GetxController {
 String bindingTemplate(String pageName) {
   return '''
 import 'package:get/get.dart';
-import '../../presentation/enrollement/controllers/${pageName}_controller.dart';
+import '../../presentation/$pageName/controllers/${pageName}_controller.dart';
 
 class ${capitalize(pageName)}ControllerBinding extends Bindings {
   @override

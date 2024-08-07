@@ -6,12 +6,11 @@ void main(List<String> arguments) {
   final parser = ArgParser();
 
   // Sub-command for creating a feature
-  final createCmd = parser.addCommand('create')
-    ..addOption('name',
-        abbr: 'n', help: 'Name of the feature', defaultsTo: 'feature');
+  parser.addCommand('create').addOption('feature',
+      abbr: 'n', help: 'Name of the feature', defaultsTo: 'feature');
 
   // Sub-command for creating a page within a feature
-  final createPageCmd = parser.addCommand('create_page')
+  parser.addCommand('create_page')
     ..addOption('name', abbr: 'n', help: 'Name of the page', defaultsTo: 'page')
     ..addOption('feature',
         abbr: 'f',
@@ -21,14 +20,14 @@ void main(List<String> arguments) {
   final results = parser.parse(arguments);
 
   if (results.command?.name == 'create') {
-    final featureName = results.command?['name'] ?? 'feature';
+    final featureName = results.command?['feature'] ?? 'feature';
     createFeature(featureName);
   } else if (results.command?.name == 'create_page') {
     final pageName = results.command?['name'] ?? 'page';
     final featureName = results.command?['feature'] ?? 'authentication';
     createPage(featureName, pageName);
   } else {
-    print('Usage: menosicli create --name <feature_name>');
+    print('Usage: menosicli create --feature <feature_name>');
     print(
         'Usage: menosicli create_page --name <page_name> --feature <feature_name>');
   }
