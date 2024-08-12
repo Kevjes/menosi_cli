@@ -12,9 +12,9 @@ class ${capitalize(pageName)}Screen extends GetView<${capitalize(pageName)}Contr
     
     return Scaffold(
       appBar: AppBar(
-        title: Text('${capitalize(pageName)} Screen'),
+        title: const Text('${capitalize(pageName)} Screen'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Welcome to ${capitalize(pageName)} Screen'),
       ),
     );
@@ -26,9 +26,17 @@ class ${capitalize(pageName)}Screen extends GetView<${capitalize(pageName)}Contr
 String controllerTemplate(String pageName) {
   return '''
 import 'package:get/get.dart';
+import '../../../../../core/navigation/app_navigation.dart';
 
 class ${capitalize(pageName)}Controller extends GetxController {
-  // Controller logic
+  final AppNavigation _appNavigation;
+  ${capitalize(pageName)}Controller(this._appNavigation);
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+  }
 }
 ''';
 }
@@ -41,37 +49,46 @@ import '../../presentation/$pageName/controllers/${pageName}_controller.dart';
 class ${capitalize(pageName)}ControllerBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<${capitalize(pageName)}Controller>(() => ${capitalize(pageName)}Controller());
+    Get.lazyPut<${capitalize(pageName)}Controller>(() => ${capitalize(pageName)}Controller(Get.find()));
   }
 }
 ''';
 }
 
-String routesTemplate(String featureName) {
+String privateRoutesTemplate(String featureName) {
   return '''
-import '../../../navigation/routes.dart';
-
-class ${capitalize(featureName)}Routes {
-  static const String _prefix = Routes.${featureName.toUpperCase()};
-
-  static const String HOME = '$featureName';
-  // Add other routes here
+class ${capitalize(featureName)}PrivateRoutes {
+  static const String home = '/$featureName';
+  // Add other privates routes here
 }
 ''';
 }
 
-String navigationTemplate(String featureName) {
+String publicRoutesTemplate(String featureName) {
+  return '''
+import 'private/${featureName}_private_routes.dart';
+
+class ${capitalize(featureName)}PublicRoutes {
+  static const home = ${capitalize(featureName)}PrivateRoutes.home;
+  // Add other publics routes here
+}
+
+''';
+}
+
+String privatePagesTemplate(String featureName) {
   return '''
 import 'package:get/get.dart';
-import '../presentation/$featureName/${featureName}_screen.dart';
-import 'bindings/${featureName}_controller_binding.dart';
-import '${featureName}_routes.dart';
+import '../../../../core/navigation/routes/features_routes.dart';
+import '../../presentation/$featureName/${featureName}_screen.dart';
+import '../bindings/${featureName}_controller_binding.dart';
+import '${featureName}_private_routes.dart';
 
-class ${capitalize(featureName)}Navigation {
-  static const String initialRoute = ${capitalize(featureName)}Routes.HOME;
-  static List<GetPage> routes = [
+class ${capitalize(featureName)}PrivatePages implements FeaturePages {
+  @override
+  List<GetPage>  getPages() => [
     GetPage(
-      name: ${capitalize(featureName)}Routes.HOME,
+      name: ${capitalize(featureName)}PrivateRoutes.home,
       page: () => ${capitalize(featureName)}Screen(),
       binding: ${capitalize(featureName)}ControllerBinding(),
     ),
@@ -88,7 +105,7 @@ import '../presentation/$featureName/controllers/${featureName}_controller.dart'
 
 class ${capitalize(featureName)}DependenciesInjection {
   static void init() {
-    Get.lazyPut<${capitalize(featureName)}Controller>(() => ${capitalize(featureName)}Controller());
+    // Get.Put(${capitalize(featureName)}Controller(Get.find()));
     // Add other dependencies here
   }
 }

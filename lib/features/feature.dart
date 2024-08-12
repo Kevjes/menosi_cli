@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:menosi_cli/app/functions.dart';
 import 'package:path/path.dart' as p;
@@ -9,13 +10,12 @@ void createFeature(String featureName) {
 
   // Define the paths for the new feature
   final featurePath = p.join(currentDir, 'lib', 'features', featureName);
-  final testFeaturePath = p.join(currentDir, 'lib', 'features', featureName);
-  final injectionFilePath = p.join(currentDir, 'lib', 'shares', 'dependences',
-      'dependencies_injection.dart');
-  final appNavigationFilePath =
-      p.join(currentDir, 'lib', 'navigation', 'navigation.dart');
-  final appRoutesFilePath =
-      p.join(currentDir, 'lib', 'navigation', 'routes.dart');
+  final testFeaturePath =
+      p.join(currentDir, 'lib', 'features', featureName, 'tests');
+  final injectionFilePath = p.join(
+      currentDir, 'lib', 'core', 'dependences', 'dependencies_injection.dart');
+  final appRoutesFilePath = p.join(
+      currentDir, 'lib', 'core', 'navigation', 'routes', 'app_routes.dart');
 
   // Create the directory structure
   Directory(p.join(featurePath, 'presentation', featureName))
@@ -23,6 +23,8 @@ void createFeature(String featureName) {
   Directory(p.join(featurePath, 'presentation', featureName, 'controllers'))
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'navigation', 'bindings'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'navigation', 'private'))
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'navigation')).createSync(recursive: true);
   Directory(p.join(featurePath, 'dependences')).createSync(recursive: true);
@@ -38,10 +40,14 @@ void createFeature(String featureName) {
   File(p.join(featurePath, 'navigation', 'bindings',
           '${featureName}_controller_binding.dart'))
       .writeAsStringSync(bindingTemplate(featureName));
-  File(p.join(featurePath, 'navigation', '${featureName}_routes.dart'))
-      .writeAsStringSync(routesTemplate(featureName));
-  File(p.join(featurePath, 'navigation', '${featureName}_navigation.dart'))
-      .writeAsStringSync(navigationTemplate(featureName));
+  File(p.join(featurePath, 'navigation', '${featureName}_public_routes.dart'))
+      .writeAsStringSync(publicRoutesTemplate(featureName));
+  File(p.join(featurePath, 'navigation', 'private',
+          '${featureName}_private_routes.dart'))
+      .writeAsStringSync(privateRoutesTemplate(featureName));
+  File(p.join(featurePath, 'navigation', 'private',
+          '${featureName}_private_pages.dart'))
+      .writeAsStringSync(privatePagesTemplate(featureName));
   File(p.join(featurePath, 'dependences',
           '${featureName}_dependencies_injection.dart'))
       .writeAsStringSync(injectionTemplate(featureName));
@@ -64,25 +70,10 @@ class""").replaceFirst('}', "  ${capitalize(featureName)}DependenciesInjection.i
   final appROuteFile = File(appRoutesFilePath);
   final updateAppRouteFileContent =
       appROuteFile.readAsStringSync().replaceFirst(";", """;
-  static const ${featureName.toUpperCase()} = '/$featureName';""");
+import '../../../features/$featureName/navigation/${featureName}_public_routes.dart';
+  """).replaceFirst(".home;", """.home;
+  static const $featureName = ${capitalize(featureName)}PublicRoutes.home;""");
   appROuteFile.writeAsStringSync(updateAppRouteFileContent);
 
-  // Update global Navigation file
-  final appNavigationFile = File(appNavigationFilePath);
-  final updateAppNavigationFileContent =
-      appNavigationFile.readAsStringSync().replaceAll("class", """
-import '../features/$featureName/navigation/${featureName}_navigation.dart';
-
-class""").replaceFirst("];", """
-
-    //$featureName feature
-    ...generateFeatureRoutes(
-      baseRoute: Routes.${featureName.toUpperCase()},
-      initialFeatureRoute: ${capitalize(featureName)}Navigation.initialRoute,
-      featureRoutes: ${capitalize(featureName)}Navigation.routes,
-    ),
-  ];""");
-  appNavigationFile.writeAsStringSync(updateAppNavigationFileContent);
-
-  print('Feature "$featureName" created successfully.');
+  log('Feature "$featureName" created successfully.');
 }
