@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:menosi_cli/app/functions.dart';
+import 'package:menosi_cli/pages/pages_templates.dart';
 import 'package:path/path.dart' as p;
 
 import 'features_templates.dart';

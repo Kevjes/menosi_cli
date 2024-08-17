@@ -25,11 +25,11 @@ void createPage(String featureName, String pageName) {
   Directory(bindingPath).createSync(recursive: true);
 
   // Create basic files with templates
-  File(p.join(pagePath, '${pageName}_screen.dart'))
+  File(p.join(pagePath, '${convertToSnakeCase(pageName)}_screen.dart'))
       .writeAsStringSync(pageTemplate(pageName));
-  File(p.join(controllerPath, '${pageName}_controller.dart'))
+  File(p.join(controllerPath, '${convertToSnakeCase(pageName)}_controller.dart'))
       .writeAsStringSync(controllerTemplate(pageName));
-  File(p.join(bindingPath, '${pageName}_controller_binding.dart'))
+  File(p.join(bindingPath, '${convertToSnakeCase(pageName)}_controller_binding.dart'))
       .writeAsStringSync(bindingTemplate(pageName));
 
   // Update routes file
@@ -45,10 +45,10 @@ void createPage(String featureName, String pageName) {
   final navigationFile = File(navigationFilePath);
   final navigationFileContent = navigationFile.readAsStringSync();
   final updatedNavigationContent = navigationFileContent.replaceFirst(';', """;\n
-import 'bindings/${pageName}_controller_binding.dart';
-import '../presentation/${pageName}/${pageName}_screen.dart';""").replaceFirst(
+import 'bindings/${convertToSnakeCase(pageName)}_controller_binding.dart';
+import '../presentation/${pageName}/${convertToSnakeCase(pageName)}_screen.dart';""").replaceFirst(
       '// Add other routes here',
-      "GetPage(\n      name: ${capitalize(featureName)}Routes.${pageName.toUpperCase()},\n      page: () => ${capitalize(pageName)}Screen(),\n      binding: ${capitalize(pageName)}ControllerBinding(),\n    ),\n    // Add other routes here");
+      "GetPage(\n      name: ${capitalize(featureName)}Routes.${pageName.toLowerCase()},\n      page: () => ${capitalize(pageName)}Screen(),\n      binding: ${capitalize(pageName)}ControllerBinding(),\n    ),\n    // Add other routes here");
   navigationFile.writeAsStringSync(updatedNavigationContent);
 
   print('Page "$pageName" created successfully within feature "$featureName".');
