@@ -15,7 +15,7 @@ void createPage(String featureName, String pageName) {
   final bindingPath = p.join(
       currentDir, 'lib', 'features', featureName, 'navigation', 'bindings');
   final navigationFilePath = p.join(currentDir, 'lib', 'features', featureName,
-      'navigation', 'private', '${featureName}_private_navigation.dart');
+      'navigation', 'private', '${featureName}_private_pages.dart');
   final routesFilePath = p.join(currentDir, 'lib', 'features', featureName,
       'navigation', 'private', '${featureName}_private_routes.dart');
 
@@ -38,8 +38,7 @@ void createPage(String featureName, String pageName) {
   final routesFile = File(routesFilePath);
   final routesFileContent = routesFile.readAsStringSync();
   final updatedRoutesContent = routesFileContent.replaceFirst(
-      '// Add other routes here',
-      "static const String $pageName = '\$home/$pageName';\n  // Add other routes here");
+      '}', "  static const String $pageName = '\$home/$pageName';\n}");
 
   routesFile.writeAsStringSync(updatedRoutesContent);
 
