@@ -2,6 +2,9 @@ import 'package:args/args.dart';
 import 'package:menosi_cli/features/feature.dart';
 import 'package:menosi_cli/pages/page.dart';
 
+// Importez le script langify ici, supposant que vous l'avez placé dans lib/langify.dart
+import 'package:menosi_cli/langify/langify.dart';
+
 void main(List<String> arguments) {
   final parser = ArgParser();
 
@@ -17,6 +20,9 @@ void main(List<String> arguments) {
         help: 'Name of the feature for the page',
         defaultsTo: 'authentication');
 
+  // Sub-command for langify
+  parser.addCommand('langify');
+
   final results = parser.parse(arguments);
 
   if (results.command?.name == 'create') {
@@ -26,9 +32,12 @@ void main(List<String> arguments) {
     final pageName = results.command?['name'] ?? 'page';
     final featureName = results.command?['feature'] ?? 'authentication';
     createPage(featureName, pageName);
+  } else if (results.command?.name == 'langify') {
+    mainLangifyCommand();
   } else {
     print('Usage: menosicli create --feature <feature_name>');
     print(
         'Usage: menosicli create_page --name <page_name> --feature <feature_name>');
+    print('Usage: menosicli langify');
   }
 }
