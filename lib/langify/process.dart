@@ -5,7 +5,7 @@ void processFile(File file, Map<String, String> translations,
   final content = file.readAsStringSync();
 
   if (content
-      .contains(RegExp(r"\/\/\s*Don't translate me", caseSensitive: false))) {
+      .contains(RegExp(r"\/\/\s*Don't translate me", caseSensitive: false))||content.contains("// DO NOT EDIT. This is code generated via package:get_cli/get_cli.dart")) {
     print('Skipping file: ${file.path}');
     return;
   }
@@ -17,7 +17,7 @@ void processFile(File file, Map<String, String> translations,
   bool hasModifications = false;
 
   for (var line in lines) {
-    if (line.trim().startsWith('import') || line.trim().startsWith('export')) {
+    if (line.trim().startsWith('import') || line.trim().startsWith('export') || line.trim().startsWith('//import') || line.trim().startsWith('//export')) {
       updatedLines.add(line);
       continue;
     }

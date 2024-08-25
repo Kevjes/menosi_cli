@@ -17,6 +17,7 @@ import 'package:path/path.dart' as p;
 import 'dart:io';
 
 import '../../features/feature.dart';
+import '../../langify/langify.dart';
 import 'templates/main_clean_feature_template.dart';
 import 'templates/services_templates/http_network_service_template.dart';
 import 'templates/services_templates/local_storage_service_template.dart';
@@ -33,6 +34,8 @@ void initProjectCleanFeatures() {
   final currentDir = Directory.current;
   Directory(p.join(currentDir.path, 'lib')).deleteSync(recursive: true);
   print('Project clean lib folder');
+  final pubspecPath = '${currentDir.path}/pubspec.yaml';
+  final appName = getAppNameFromPubspec(pubspecPath);
 
   // Define the paths for the new feature
   final featuresPath = p.join(currentDir.path, 'lib', 'features');
@@ -58,9 +61,9 @@ void initProjectCleanFeatures() {
   Directory(p.join(corePath, 'utils')).createSync(recursive: true);
 
 
-  File(p.join(currentDir.path, 'pubspec.yaml')).writeAsStringSync(pubspecTemplate(currentDir.path.split('\\').last));
+  File(p.join(currentDir.path, 'pubspec.yaml')).writeAsStringSync(pubspecTemplate(appName));
   print('created ${currentDir.path}/pubspec.yaml');
-  File(p.join(currentDir.path, 'lib', 'main.dart')).writeAsStringSync(mainCleanFeaturesTemplate(currentDir.path.split('\\').last));
+  File(p.join(currentDir.path, 'lib', 'main.dart')).writeAsStringSync(mainCleanFeaturesTemplate(appName));
   print('created ${currentDir.path}/lib/main.dart');
 
   File(p.join(corePath, 'dependences', 'app_dependences.dart')).writeAsStringSync(dependencesTemplate());

@@ -92,7 +92,7 @@ import '../../features/$featureName/dependences/${snakeFeatureName}_dependencies
 import '../../features/$featureName/navigation/private/${snakeFeatureName}_pages.dart';
 
 class""")
-      .replaceFirst('}', "   ${capitalize(featureName)}Dependencies.init();\n}")
+      .replaceFirst('}', "    ${capitalize(featureName)}Dependencies.init();\n }")
       .replaceFirst("featuresPages = [", """featuresPages = [
       ${capitalize(featureName)}Pages(),""");
   injectionFile.writeAsStringSync(updatedContent);
