@@ -4,6 +4,7 @@ import 'package:menosi_cli/pages/page.dart';
 
 // Importez le script langify ici, supposant que vous l'avez placé dans lib/langify.dart
 import 'package:menosi_cli/langify/langify.dart';
+import 'package:menosi_cli/project/cleanFeatures/init_project_clean_feature.dart';
 
 void main(List<String> arguments) {
   final parser = ArgParser();
@@ -23,21 +24,36 @@ void main(List<String> arguments) {
   // Sub-command for langify
   parser.addCommand('langify');
 
+  // Sub-command for init project
+  parser.addCommand('init');
+
   final results = parser.parse(arguments);
 
   if (results.command?.name == 'create') {
-    final featureName = results.command?['feature'] ?? 'feature';
+    final featureName = results.command?['feature'];
+    if (featureName == null) {
+      print('Usage: menosi create --feature <feature_name>');
+      return;
+    }
     createFeature(featureName);
+  } else if (results.command?.name == 'init') {
+    initProjectCleanFeatures();
   } else if (results.command?.name == 'create_page') {
-    final pageName = results.command?['name'] ?? 'page';
-    final featureName = results.command?['feature'] ?? 'authentication';
+    final pageName = results.command?['name'];
+    final featureName = results.command?['feature'];
+    if (pageName == null || featureName == null) {
+      print(
+          'Usage: menosi create_page --name <page_name> --feature <feature_name>');
+      return;
+    }
     createPage(featureName, pageName);
   } else if (results.command?.name == 'langify') {
     mainLangifyCommand();
   } else {
-    print('Usage: menosicli create --feature <feature_name>');
+    print('Usage: menosi init');
+    print('Usage: menosi create --feature <feature_name>');
     print(
-        'Usage: menosicli create_page --name <page_name> --feature <feature_name>');
-    print('Usage: menosicli langify');
+        'Usage: menosi create_page --name <page_name> --feature <feature_name>');
+    print('Usage: menosi langify');
   }
 }

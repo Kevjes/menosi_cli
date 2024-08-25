@@ -18,11 +18,11 @@ void mainLangifyCommand() {
       .listSync(recursive: true)
       .where((file) => file.path.endsWith('.dart'))
       .forEach((file) {
-    processFile(file as File, translations);
+    processFile(file as File, translations, projectDir.path);
   });
 
   // Enregistrer les traductions dans fr.json avec un formatage correct
-  final jsonFilePath = '${projectDir.path}/assets/translations/fr.json';
+  final jsonFilePath = '${projectDir.path}/assets/locales/fr.json';
   final jsonFile = File(jsonFilePath);
   jsonFile.createSync(recursive: true);
   jsonFile.writeAsStringSync(JsonEncoder.withIndent('  ').convert(translations), flush: true);
