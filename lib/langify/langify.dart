@@ -18,7 +18,7 @@ void mainLangifyCommand() {
       .listSync(recursive: true)
       .where((file) => file.path.endsWith('.dart'))
       .forEach((file) {
-    processFile(file as File, translations, projectDir.path);
+    processFile(file as File, translations, projectDir.path.split('\\').last);
   });
 
   // Enregistrer les traductions dans fr.json avec un formatage correct

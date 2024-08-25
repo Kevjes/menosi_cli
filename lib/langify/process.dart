@@ -1,6 +1,7 @@
 import 'dart:io';
 
-void processFile(File file, Map<String, String> translations, String pathProjectDir) {
+void processFile(
+    File file, Map<String, String> translations, String pathProjectDir) {
   final content = file.readAsStringSync();
 
   // Vérifier si le fichier contient le commentaire "//Don't translate me"
@@ -21,8 +22,7 @@ void processFile(File file, Map<String, String> translations, String pathProject
     if (line.contains("import 'package:get/get.dart';")) {
       hasGetImport = true;
     }
-    if (line.contains(
-        "import 'package:$pathProjectDir/generated/locales.g.dart';")) {
+    if (line.contains("import 'package:$pathProjectDir/generated/locales.g.dart';")) {
       hasMaterialImport = true;
     }
   }

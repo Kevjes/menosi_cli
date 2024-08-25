@@ -2,6 +2,7 @@ import 'package:menosi_cli/app/functions.dart';
 
 String privateRoutesTemplate(String featureName) {
   return '''
+//Don't translate me
 class ${capitalize(featureName)}PrivateRoutes {
   static const String home = '/$featureName';
   // Add other privates routes here
@@ -11,7 +12,7 @@ class ${capitalize(featureName)}PrivateRoutes {
 
 String publicRoutesTemplate(String featureName) {
   return '''
-import 'private/${featureName}_private_routes.dart';
+import 'private/${convertToSnakeCase(featureName)}_private_routes.dart';
 
 class ${capitalize(featureName)}PublicRoutes {
   static const home = ${capitalize(featureName)}PrivateRoutes.home;
@@ -24,12 +25,12 @@ class ${capitalize(featureName)}PublicRoutes {
 String privatePagesTemplate(String featureName) {
   return '''
 import 'package:get/get.dart';
-import '../../../../core/navigation/routes/features_routes.dart';
-import '../../presentation/$featureName/${featureName}_screen.dart';
-import '../bindings/${featureName}_controller_binding.dart';
-import '${featureName}_private_routes.dart';
+import '../../../../core/navigation/routes/features_pages.dart';
+import '../../ui/$featureName/${convertToSnakeCase(featureName)}_screen.dart';
+import '../bindings/${convertToSnakeCase(featureName)}_controller_binding.dart';
+import '${convertToSnakeCase(featureName)}_private_routes.dart';
 
-class ${capitalize(featureName)}PrivatePages implements FeaturePages {
+class ${capitalize(featureName)}Pages implements FeaturePages {
   @override
   List<GetPage>  getPages() => [
     GetPage(
@@ -45,10 +46,10 @@ class ${capitalize(featureName)}PrivatePages implements FeaturePages {
 
 String injectionTemplate(String featureName) {
   return '''
-import 'package:get/get.dart';
-import '../presentation/$featureName/controllers/${featureName}_controller.dart';
+//import 'package:get/get.dart';
+//import '../ui/$featureName/controllers/${convertToSnakeCase(featureName)}_controller.dart';
 
-class ${capitalize(featureName)}DependenciesInjection {
+class ${capitalize(featureName)}Dependencies {
   static void init() {
     // Get.Put(${capitalize(featureName)}Controller(Get.find()));
     // Add other dependencies here
@@ -59,6 +60,7 @@ class ${capitalize(featureName)}DependenciesInjection {
 
 String testTemplate(String featureName) {
   return '''
+//Don't translate me
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

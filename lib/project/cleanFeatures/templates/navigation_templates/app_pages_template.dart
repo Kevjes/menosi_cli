@@ -1,11 +1,11 @@
 String appPagesTemplate() {
   return '''
 import 'package:get/get.dart';
-import '../../presentation/pages/notFoundScreen/not_found_screen.dart';
-import '../../presentation/pages/splashScreen/splash_screen.dart';
+import '../../ui/screens/notFoundScreen/not_found_screen.dart';
+import '../../ui/screens/splashScreen/splash_screen.dart';
 import '../bindings/splash_controller_binding.dart';
 import 'app_routes.dart';
-import 'features_routes.dart';
+import 'features_pages.dart';
 
 class AppPages {
   final List<FeaturePages> features;

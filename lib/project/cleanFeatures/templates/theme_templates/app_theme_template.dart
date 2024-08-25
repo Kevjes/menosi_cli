@@ -2,33 +2,33 @@ String appThemeTemplate() {
   return '''
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../utils/app_font_sizes.dart';
 import '../utils/app_colors.dart';
+import '../utils/app_dimensions.dart';
 
 class AppThemes {
   static final TextTheme lightTextTheme = TextTheme(
     headlineLarge: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s32,
+      fontSize: AppDimensions.fontSizeExtraLarge,
       fontWeight: FontWeight.bold,
       color: AppColors.primary,
     ),
     headlineMedium: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s24,
+      fontSize: AppDimensions.fontSizeLarge,
       fontWeight: FontWeight.w600,
       color: AppColors.primary,
     ),
     bodyLarge: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s16,
+      fontSize: AppDimensions.fontSizeMedium,
       fontWeight: FontWeight.w600,
       color: Colors.black,
     ),
     bodyMedium: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s14,
+      fontSize: AppDimensions.fontSizeSmall,
       fontWeight: FontWeight.normal,
       color: Colors.black,
     ),
     bodySmall: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s12,
+      fontSize: AppDimensions.fontSizeExtraSmall,
       fontWeight: FontWeight.normal,
       color: Colors.black,
     ),
@@ -36,22 +36,22 @@ class AppThemes {
 
   static final TextTheme darkTextTheme = TextTheme(
     headlineLarge: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s32,
+      fontSize: AppDimensions.fontSizeExtraLarge,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
     headlineMedium: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s24,
+      fontSize: AppDimensions.fontSizeLarge,
       fontWeight: FontWeight.w600,
       color: Colors.white,
     ),
     bodyLarge: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s24,
+      fontSize: AppDimensions.fontSizeMedium,
       fontWeight: FontWeight.normal,
       color: Colors.white,
     ),
     bodyMedium: GoogleFonts.poppins(
-      fontSize: AppFontSizes.s14,
+      fontSize: AppDimensions.fontSizeSmall,
       fontWeight: FontWeight.normal,
       color: Colors.white,
     ),
@@ -73,12 +73,12 @@ class AppThemes {
       elevation: 0,
       titleTextStyle: GoogleFonts.poppins(
         color: AppColors.primary,
-        fontSize: AppFontSizes.s20,
+        fontSize: AppDimensions.fontSizeLarge,
         fontWeight: FontWeight.w600,
       ),
       iconTheme: const IconThemeData(color: Colors.white),
     ),
-    cardTheme: CardTheme(color: Colors.white),
+    cardTheme: const CardTheme(color: Colors.white),
     buttonTheme: const ButtonThemeData(
       buttonColor: AppColors.primary,
       textTheme: ButtonTextTheme.primary,
@@ -95,17 +95,18 @@ class AppThemes {
       elevation: 0,
       titleTextStyle: GoogleFonts.poppins(
         color: Colors.white,
-        fontSize: AppFontSizes.s20,
+        fontSize: AppDimensions.fontSizeLarge,
         fontWeight: FontWeight.w600,
       ),
-      iconTheme: IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: Colors.white),
     ),
-    buttonTheme: ButtonThemeData(
+    buttonTheme: const ButtonThemeData(
       buttonColor: Colors.blue,
       textTheme: ButtonTextTheme.primary,
     ),
   );
 }
+
 
 ''';
 }

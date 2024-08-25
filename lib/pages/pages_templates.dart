@@ -12,9 +12,9 @@ class ${capitalize(pageName)}Screen extends GetView<${capitalize(pageName)}Contr
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('${capitalize(pageName)} Screen'),
+        title:  Text('${capitalize(pageName)} Screen'),
       ),
-      body: const Center(
+      body:  Center(
         child: Text('Welcome to ${capitalize(pageName)} Screen'),
       ),
     );
@@ -34,8 +34,12 @@ class ${capitalize(pageName)}Controller extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    // Generate by Menosi_cli
     super.onInit();
+  }
+
+  void goBack(){
+    _appNavigation.goBack();
   }
 }
 ''';
@@ -44,7 +48,7 @@ class ${capitalize(pageName)}Controller extends GetxController {
 String bindingTemplate(String pageName) {
   return '''
 import 'package:get/get.dart';
-import '../../presentation/$pageName/controllers/${convertToSnakeCase(pageName)}_controller.dart';
+import '../../ui/$pageName/controllers/${convertToSnakeCase(pageName)}_controller.dart';
 
 class ${capitalize(pageName)}ControllerBinding extends Bindings {
   @override

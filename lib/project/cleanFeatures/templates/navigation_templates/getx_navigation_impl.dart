@@ -2,7 +2,7 @@ String getxNavigationImplTemplate(){
   return '''
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../dependences/dependencies_injection.dart';
+import '../dependences/app_dependences.dart';
 import 'app_navigation.dart';
 
 class GetXNavigationImpl implements AppNavigation {
@@ -10,7 +10,7 @@ class GetXNavigationImpl implements AppNavigation {
   GetXNavigationImpl(this.notFoundPage);
 
   @override
-  Future<void>? navigateTo(String routeName, {dynamic arguments}) {
+  Future<void>? toNamed(String routeName, {dynamic arguments}) {
     try {
       return Get.toNamed(routeName, arguments: arguments);
     } catch (e) {
@@ -19,7 +19,7 @@ class GetXNavigationImpl implements AppNavigation {
   }
 
   @override
-  Future<void>? navigateToPage(Widget page, {dynamic arguments}) {
+  Future<void>? to(Widget page, {dynamic arguments}) {
     try {
       return Get.to(page, arguments: arguments);
     } catch (e) {
@@ -28,7 +28,7 @@ class GetXNavigationImpl implements AppNavigation {
   }
 
   @override
-  Future<void>? navigateAndReplace(String routeName, {dynamic arguments}) {
+  Future<void>? toNamedAndReplace(String routeName, {dynamic arguments}) {
     try {
       return Get.offNamed(routeName, arguments: arguments);
     } catch (e) {
@@ -37,10 +37,11 @@ class GetXNavigationImpl implements AppNavigation {
   }
 
   @override
-  Future<void>? navigateAndReplaceAll(String routeName, {dynamic arguments}) {
+
+  Future<void>? toNamedAndReplaceAll(String routeName, {dynamic arguments}) {
     try {
       Get.offAllNamed(routeName, arguments: arguments);
-      return DependencyInjection.init();
+      return AppDependency.init();
     } catch (e) {
       return Get.toNamed(notFoundPage, arguments: arguments);
     }
@@ -55,6 +56,7 @@ class GetXNavigationImpl implements AppNavigation {
     }
   }
 }
+
 
 ''';
 }

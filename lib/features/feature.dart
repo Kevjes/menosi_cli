@@ -8,50 +8,75 @@ import 'features_templates.dart';
 
 void createFeature(String featureName) {
   final currentDir = Directory.current.path;
+  featureName = transformToLowerCamelCase(featureName);
+  final snakeFeatureName = convertToSnakeCase(featureName);
 
   // Define the paths for the new feature
-  final featurePath = p.join(currentDir, 'lib', 'features', featureName);
+  final featurePath = p.join(currentDir, 'lib', 'features', (featureName));
   final testFeaturePath =
       p.join(currentDir, 'lib', 'features', featureName, 'tests');
-  final injectionFilePath = p.join(
-      currentDir, 'lib', 'core', 'dependences', 'app_dependences.dart');
+  final injectionFilePath =
+      p.join(currentDir, 'lib', 'core', 'dependences', 'app_dependences.dart');
   final appRoutesFilePath = p.join(
       currentDir, 'lib', 'core', 'navigation', 'routes', 'app_routes.dart');
 
   // Create the directory structure
-  Directory(p.join(featurePath, 'presentation', featureName))
+  Directory(p.join(featurePath, 'application', 'useCases'))
       .createSync(recursive: true);
-  Directory(p.join(featurePath, 'presentation', featureName, 'controllers'))
+  Directory(p.join(featurePath, 'application', 'validators'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'domain', 'core', 'exceptions'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'domain', 'core', 'utils'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'domain', 'entities'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'domain', 'repositories'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'infrastructure', 'models'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'infrastructure', 'repositoriesImpl'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'ui', featureName)).createSync(recursive: true);
+  Directory(p.join(featurePath, 'ui', featureName, 'controllers'))
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'navigation', 'bindings'))
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'navigation', 'private'))
       .createSync(recursive: true);
-  Directory(p.join(featurePath, 'navigation')).createSync(recursive: true);
   Directory(p.join(featurePath, 'dependences')).createSync(recursive: true);
   Directory(p.join(featurePath, 'tests')).createSync(recursive: true);
 
   // Create basic files with templates
-  File(p.join(featurePath, 'presentation', featureName,
-          '${featureName}_screen.dart'))
+  File(p.join(
+          featurePath, 'ui', featureName, '${snakeFeatureName}_screen.dart'))
       .writeAsStringSync(pageTemplate(featureName));
-  File(p.join(featurePath, 'presentation', featureName, 'controllers',
-          '${featureName}_controller.dart'))
+  File(p.join(featurePath, 'ui', featureName, 'controllers',
+          '${snakeFeatureName}_controller.dart'))
       .writeAsStringSync(controllerTemplate(featureName));
   File(p.join(featurePath, 'navigation', 'bindings',
-          '${featureName}_controller_binding.dart'))
+          '${snakeFeatureName}_controller_binding.dart'))
       .writeAsStringSync(bindingTemplate(featureName));
-  File(p.join(featurePath, 'navigation', '${featureName}_public_routes.dart'))
+  File(p.join(
+          featurePath, 'navigation', '${snakeFeatureName}_public_routes.dart'))
       .writeAsStringSync(publicRoutesTemplate(featureName));
   File(p.join(featurePath, 'navigation', 'private',
-          '${featureName}_private_routes.dart'))
+          '${snakeFeatureName}_private_routes.dart'))
       .writeAsStringSync(privateRoutesTemplate(featureName));
   File(p.join(featurePath, 'navigation', 'private',
-          '${featureName}_private_pages.dart'))
+          '${snakeFeatureName}_pages.dart'))
       .writeAsStringSync(privatePagesTemplate(featureName));
-  File(p.join(featurePath, 'dependences',
-          '${featureName}_dependencies_injection.dart'))
+  File(p.join(
+          featurePath, 'dependences', '${snakeFeatureName}_dependencies.dart'))
       .writeAsStringSync(injectionTemplate(featureName));
+  File(p.join(featurePath, 'domain', 'core', 'exceptions',
+          '${snakeFeatureName}_exception.dart'))
+      .writeAsStringSync("""
+import '../../../../../core/exceptions/base_exception.dart';
+
+class ${capitalize(featureName)}Exception extends BaseException {
+  ${capitalize(featureName)}Exception(String message) : super(message);
+}""");
 
   // Create test file
   Directory(testFeaturePath).createSync(recursive: true);
@@ -61,19 +86,26 @@ void createFeature(String featureName) {
   // Update global dependencies injection file
   final injectionFile = File(injectionFilePath);
   final injectionFileContent = injectionFile.readAsStringSync();
-  final updatedContent = injectionFileContent.replaceFirst('class', """
-import '../../features/$featureName/dependences/${featureName}_dependencies_injection.dart';
+  final updatedContent = injectionFileContent
+      .replaceFirst('class', """
+import '../../features/$featureName/dependences/${snakeFeatureName}_dependencies.dart';
+import '../../features/$featureName/navigation/private/${snakeFeatureName}_pages.dart';
 
-class""").replaceFirst('}', "  ${capitalize(featureName)}DependenciesInjection.init();\n}");
+class""")
+      .replaceFirst('}', "   ${capitalize(featureName)}Dependencies.init();\n}")
+      .replaceFirst("featuresPages = [", """featuresPages = [
+      ${capitalize(featureName)}Pages(),""");
   injectionFile.writeAsStringSync(updatedContent);
 
   // Update global Routes file
   final appROuteFile = File(appRoutesFilePath);
   final updateAppRouteFileContent =
       appROuteFile.readAsStringSync().replaceFirst(";", """;
-import '../../../features/$featureName/navigation/${featureName}_public_routes.dart';
-  """).replaceFirst(".home;", """.home;
-  static const $featureName = ${capitalize(featureName)}PublicRoutes.home;""");
+import '../../../features/$featureName/navigation/${snakeFeatureName}_public_routes.dart';
+  """).replaceFirst("}", """
+  //${capitalize(featureName)} Public Routes
+  static const $featureName = ${capitalize(featureName)}PublicRoutes.home;
+}""");
   appROuteFile.writeAsStringSync(updateAppRouteFileContent);
 
   log('Feature "$featureName" created successfully.');

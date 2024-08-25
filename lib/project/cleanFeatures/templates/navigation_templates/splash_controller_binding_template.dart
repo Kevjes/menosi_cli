@@ -1,7 +1,7 @@
 String splashControllerBindingTemplate() {
   return '''
 import 'package:get/get.dart';
-import '../../presentation/pages/splashScreen/controllers/splash_controller.dart';
+import '../../ui/screens/splashScreen/controllers/splash_controller.dart';
 
 class SplashControllerBinding extends Bindings {
   @override

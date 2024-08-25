@@ -7,12 +7,10 @@ import '../navigation/app_navigation.dart';
 import '../navigation/getx_navigation_impl.dart';
 import '../navigation/routes/app_pages.dart';
 import '../navigation/routes/app_routes.dart';
-import '../../features/home/navigation/private/home_private_navigation.dart';
-import '../services/localServices/get_storage_local_storage_services.dart';
-import '../services/localServices/local_storage_services.dart';
-import '../services/networkServices/http_network_services.dart';
-import '../services/networkServices/network_services.dart';
-import '../../features/home/dependences/home_dependencies_injection.dart';
+import '../services/localServices/get_storage_local_storage_service.dart';
+import '../services/localServices/local_storage_service.dart';
+import '../services/networkServices/http_network_service.dart';
+import '../services/networkServices/network_service.dart';
 
 class AppDependency {
   static Future<void> init() async {
@@ -22,7 +20,6 @@ class AppDependency {
 
     // initialize all pages
     final featuresPages = [
-      HomePages(),
       //Add features pages here
     ];
     Get.lazyPut(() => AppPages(featuresPages));
@@ -40,7 +37,6 @@ class AppDependency {
     Get.lazyPut<LocalStorageService>(() => GetStorageService());
 
     //Chargement des dependances de features
-    HomeDependenciesInjection.init();
   }
 }
 

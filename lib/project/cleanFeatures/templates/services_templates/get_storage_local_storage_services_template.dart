@@ -1,7 +1,7 @@
 String getStorageLocalStorageServiceTemplate() {
   return '''
 import 'package:get_storage/get_storage.dart';
-import 'local_storage_services.dart';
+import 'local_storage_service.dart';
 
 class GetStorageService implements LocalStorageService {
   final GetStorage storage = GetStorage();

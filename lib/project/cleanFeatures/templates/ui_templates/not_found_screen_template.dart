@@ -2,7 +2,7 @@ String notFoundScreenTemplate() {
   return '''
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import '../../.../navigation/routes/app_routes.dart';
+import '../../../navigation/routes/app_routes.dart';
 import '../../../utils/app_dimensions.dart';
 
 class NotFoundScreen extends StatelessWidget {
