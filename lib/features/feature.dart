@@ -14,7 +14,7 @@ void createFeature(String featureName) {
   final testFeaturePath =
       p.join(currentDir, 'lib', 'features', featureName, 'tests');
   final injectionFilePath = p.join(
-      currentDir, 'lib', 'core', 'dependences', 'dependencies_injection.dart');
+      currentDir, 'lib', 'core', 'dependences', 'app_dependences.dart');
   final appRoutesFilePath = p.join(
       currentDir, 'lib', 'core', 'navigation', 'routes', 'app_routes.dart');
 

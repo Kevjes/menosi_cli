@@ -7,6 +7,7 @@ import 'package:menosi_cli/project/cleanFeatures/templates/navigation_templates/
 import 'package:menosi_cli/project/cleanFeatures/templates/navigation_templates/features_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/navigation_templates/getx_navigation_impl.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/navigation_templates/splash_controller_binding_template.dart';
+import 'package:menosi_cli/project/cleanFeatures/templates/pubspec_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/services_templates/get_storage_local_storage_services_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/utils_templates/app_colors_templates.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/utils_templates/app_constant_template.dart';
@@ -15,6 +16,7 @@ import 'package:menosi_cli/project/cleanFeatures/templates/utils_templates/respo
 import 'package:path/path.dart' as p;
 import 'dart:io';
 
+import '../../features/feature.dart';
 import 'templates/main_clean_feature_template.dart';
 import 'templates/services_templates/http_network_service_template.dart';
 import 'templates/services_templates/local_storage_service_template.dart';
@@ -37,6 +39,8 @@ void initProjectCleanFeatures() {
   final corePath = p.join(currentDir.path, 'lib', 'core');
 
   // Create the directory structure
+  Directory(p.join(currentDir.path, 'assets', 'images')).createSync(recursive: true);
+  Directory(p.join(currentDir.path, 'assets', 'icons')).createSync(recursive: true);
   Directory(featuresPath).createSync(recursive: true);
   Directory(corePath).createSync(recursive: true);
   Directory(p.join(corePath, 'navigation')).createSync(recursive: true);
@@ -54,11 +58,12 @@ void initProjectCleanFeatures() {
   Directory(p.join(corePath, 'utils')).createSync(recursive: true);
 
 
+  File(p.join(currentDir.path, 'pubspec.yaml')).writeAsStringSync(pubspecTemplate(currentDir.path.split('\\').last));
+  print('created ${currentDir.path}/pubspec.yaml');
+  File(p.join(currentDir.path, 'lib', 'main.dart')).writeAsStringSync(mainCleanFeaturesTemplate(currentDir.path.split('\\').last));
+  print('created ${currentDir.path}/lib/main.dart');
 
   File(p.join(corePath, 'dependences', 'app_dependences.dart')).writeAsStringSync(dependencesTemplate());
-
-  File(p.join(currentDir.path, 'lib', 'main.dart')).writeAsStringSync(mainCleanFeaturesTemplate(currentDir.path.split('\\').last));
-  print('created ${currentDir.path}/main.dart');
   print('created $corePath/dependences/app_dependences.dart');
 
   File(p.join(corePath, 'events', 'app_events_service.dart')).writeAsStringSync(eventBusServiceTemplate());
@@ -111,9 +116,8 @@ void initProjectCleanFeatures() {
   print('created $corePath/ui/screens/splashScreen/splash_screen.dart');
   File(p.join(corePath, 'ui', 'screens', 'splashScreen','controllers', 'splash_controller.dart')).writeAsStringSync(splashControllerTemplate());
   print('created $corePath/ui/screens/splashScreen/controllers/splash_controller.dart');
+
+  createFeature('home');
   
-
-
-
   print('Project clean features initialized');
 }

@@ -13,6 +13,12 @@ class AppDimensions {
   static const double radiusLarge = 24.0;
   static const double radiusExtraLarge = 32.0;
 
+  static const double fontSizeExtraSmall = 8.0;
+  static const double fontSizeSmall = 11.0;
+  static const double fontSizeMedium = 14.0;
+  static const double fontSizeLarge = 20.0;
+  static const double fontSizeExtraLarge = 24.0;
+
   static const double s16 = 16.0;
   static const double s32 = 32.0;
   static const double s50 = 50.0;
