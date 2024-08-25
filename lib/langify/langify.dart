@@ -6,6 +6,7 @@ import 'package:menosi_cli/langify/process.dart';
 void mainLangifyCommand() {
   final projectDir = Directory.current;
   final translations = <String, String>{};
+  final globalTranslations = <String, String>{}; // Pour éviter les doublons
 
   // Parcourir tous les fichiers Dart dans le dossier lib
   final libDir = Directory('${projectDir.path}/lib');
@@ -18,7 +19,7 @@ void mainLangifyCommand() {
       .listSync(recursive: true)
       .where((file) => file.path.endsWith('.dart'))
       .forEach((file) {
-    processFile(file as File, translations, projectDir.path.split('\\').last);
+    processFile(file as File, translations, globalTranslations, projectDir.path.split('\\').last);
   });
 
   // Enregistrer les traductions dans fr.json avec un formatage correct

@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
 import 'package:menosi_cli/features/feature.dart';
+import 'package:menosi_cli/langify/revert/langify_revert.dart';
 import 'package:menosi_cli/pages/page.dart';
 
 // Importez le script langify ici, supposant que vous l'avez placé dans lib/langify.dart
@@ -10,19 +11,18 @@ void main(List<String> arguments) {
   final parser = ArgParser();
 
   // Sub-command for creating a feature
-  parser.addCommand('create').addOption('feature',
-      abbr: 'n', help: 'Name of the feature', defaultsTo: 'feature');
+  parser
+      .addCommand('create')
+      .addOption('feature', abbr: 'n', help: 'Name of the feature');
 
   // Sub-command for creating a page within a feature
   parser.addCommand('create_page')
-    ..addOption('name', abbr: 'n', help: 'Name of the page', defaultsTo: 'page')
-    ..addOption('feature',
-        abbr: 'f',
-        help: 'Name of the feature for the page',
-        defaultsTo: 'authentication');
+    ..addOption('name', abbr: 'n', help: 'Name of the page')
+    ..addOption('feature', abbr: 'f', help: 'Name of the feature for the page');
 
   // Sub-command for langify
-  parser.addCommand('langify');
+  parser.addCommand('langify').addFlag('revert',
+      abbr: 'r', negatable: false, help: 'Revert the changes made by langify');
 
   // Sub-command for init project
   parser.addCommand('init');
@@ -48,6 +48,10 @@ void main(List<String> arguments) {
     }
     createPage(featureName, pageName);
   } else if (results.command?.name == 'langify') {
+    final revert = results.command!['revert'] as bool;
+    if (revert) {
+      return mainLangifyRevert();
+    }
     mainLangifyCommand();
   } else {
     print('Usage: menosi init');
@@ -55,5 +59,6 @@ void main(List<String> arguments) {
     print(
         'Usage: menosi create_page --name <page_name> --feature <feature_name>');
     print('Usage: menosi langify');
+    print('Usage: menosi langify [--revert]');
   }
 }

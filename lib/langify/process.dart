@@ -1,68 +1,70 @@
 import 'dart:io';
 
-void processFile(
-    File file, Map<String, String> translations, String pathProjectDir) {
+void processFile(File file, Map<String, String> translations,
+    Map<String, String> globalTranslations, String pathProjectDir) {
   final content = file.readAsStringSync();
 
-  // Vérifier si le fichier contient le commentaire "//Don't translate me"
-  if (content.startsWith("//Don't translate me")) {
+  if (content
+      .contains(RegExp(r"\/\/\s*Don't translate me", caseSensitive: false))) {
     print('Skipping file: ${file.path}');
     return;
   }
 
-  // Séparer le contenu en lignes pour traiter les imports
   final lines = content.split('\n');
   final updatedLines = <String>[];
   bool hasGetImport = false;
   bool hasMaterialImport = false;
   bool hasModifications = false;
 
-  // Vérifier les importations existantes
   for (var line in lines) {
-    if (line.contains("import 'package:get/get.dart';")) {
-      hasGetImport = true;
-    }
-    if (line.contains("import 'package:$pathProjectDir/generated/locales.g.dart';")) {
-      hasMaterialImport = true;
-    }
-  }
-
-  final regex = RegExp(r'''(["'])(.*?)(\1)''');
-  final variableRegex = RegExp(r'\$\{?([a-zA-Z_][a-zA-Z0-9_\.]*)\}?');
-  final fileName = file.uri.pathSegments.last.split('.').first;
-
-  for (var line in lines) {
-    // Ignorer les lignes contenant 'import' ou 'export'
     if (line.trim().startsWith('import') || line.trim().startsWith('export')) {
       updatedLines.add(line);
       continue;
     }
 
+    if (line.contains(
+        RegExp(r"\/\/\s*Don't translate line", caseSensitive: false))) {
+      updatedLines.add(line);
+      continue;
+    }
+
+    final regex = RegExp(r'''(["'])(.*?)(\1)''');
     final matches = regex.allMatches(line);
 
     for (final match in matches) {
-      final originalText =
-          match.group(2); // Le texte capturé est dans le groupe 2
-
+      final originalText = match.group(2);
       if (originalText != null && originalText.isNotEmpty) {
         hasModifications = true;
-        // Vérifier si le texte contient des variables
-        final variableMatches = variableRegex.allMatches(originalText);
-        if (variableMatches.isNotEmpty) {
-          // Remplacer les variables par %s pour le fichier JSON
-          String textForJson = originalText.replaceAll(variableRegex, '%s');
-          final key = generateKey(fileName, textForJson);
-          translations[key] = textForJson;
 
-          // Extraire les variables pour trArgs
-          final variables =
-              variableMatches.map((vMatch) => vMatch.group(1)).toList();
-          line = line.replaceFirst(match.group(0) ?? '',
-              'LocaleKeys.$key.trArgs([${variables.join(', ')}])');
+        final variables = <String>[];
+        final linksVariables = <String>[];
+        String processedText = originalText;
+
+        processedText = processDynamicVariables(processedText, variables);
+        processedText = processLinksEmailsPhones(processedText, linksVariables);
+
+        String key;
+        if (globalTranslations.containsKey(originalText)) {
+          key = globalTranslations[originalText]!;
         } else {
-          // Texte sans variables
-          final key = generateKey(fileName, originalText);
-          translations[key] = originalText;
+          final fileName = file.uri.pathSegments.last.split('.').first;
+          key = generateTranslationKey(fileName, originalText);
+          globalTranslations[originalText] = key;
+          translations[key] = processedText;
+        }
+
+        if (variables.isNotEmpty) {
+          line = line.replaceFirst(
+            match.group(0) ?? '',
+            'LocaleKeys.$key.trArgs([${variables.join(', ')}])',
+          );
+        }
+        if (linksVariables.isNotEmpty) {
+          line = line.replaceFirst(
+            match.group(0) ?? '',
+            'LocaleKeys.$key.trArgs(${linksVariables.map((e) => "'$e'").toList()})',
+          );
+        } else {
           line = line.replaceFirst(match.group(0) ?? '', 'LocaleKeys.$key.tr');
         }
       }
@@ -71,7 +73,6 @@ void processFile(
     updatedLines.add(line);
   }
 
-  // Ajouter les importations manquantes si nécessaire
   if (hasModifications) {
     if (!hasGetImport) {
       updatedLines.insert(0, "import 'package:get/get.dart';");
@@ -86,11 +87,42 @@ void processFile(
   file.writeAsStringSync(newContent, flush: true);
 }
 
-String generateKey(String fileName, String text) {
-  // Nettoyer le texte en remplaçant les caractères non-alphanumériques par des underscores
+String processDynamicVariables(String originalText, List<String> variables) {
+  final variableRegex = RegExp(r'\$\{?([a-zA-Z_][a-zA-Z0-9_\.]*)\}?');
+  return originalText.replaceAllMapped(variableRegex, (match) {
+    variables.add(match.group(1)!);
+    return '%s';
+  });
+}
+
+String processLinksEmailsPhones(String originalText, List<String> variables) {
+  final linkRegex = RegExp(r'http[s]?:\/\/[^\s]+');
+  final emailRegex = RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b');
+  final phoneRegex = RegExp(r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b');
+
+  String processedText = originalText;
+
+  processedText = processedText.replaceAllMapped(linkRegex, (match) {
+    variables.add(match.group(0)!);
+    return '%s';
+  });
+
+  processedText = processedText.replaceAllMapped(emailRegex, (match) {
+    variables.add(match.group(0)!);
+    return '%s';
+  });
+
+  processedText = processedText.replaceAllMapped(phoneRegex, (match) {
+    variables.add(match.group(0)!);
+    return '%s';
+  });
+
+  return processedText;
+}
+
+String generateTranslationKey(String fileName, String text) {
   String cleanText = text.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_');
 
-  // Si la longueur de cleanText est inférieure à 30 caractères, on l'utilise tel quel, sinon on utilise les 30 premiers caractères
   if (cleanText.length > 30) {
     cleanText = cleanText.substring(0, 30);
   }
