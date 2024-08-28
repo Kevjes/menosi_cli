@@ -5,6 +5,7 @@ import 'package:menosi_cli/langify/process.dart';
 import 'package:yaml/yaml.dart';
 
 import 'revert/delete_doublon.dart';
+import 'revert/revert.dart';
 
 void mainLangifyCommand() {
   final projectDir = Directory.current;

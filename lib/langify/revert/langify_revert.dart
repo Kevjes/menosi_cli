@@ -10,6 +10,15 @@ void mainLangifyRevert() {
   final projectDir = Directory.current;
   final pathToJson = '${projectDir.path}/assets/locales/fr.json';
   final translations = loadTranslations(pathToJson);
+  if (translations == null) {
+    print('Error: fr.json file not found in assets/locales. Exiting...');
+    print('Usage: menosi langify to generate fr.json');
+    return;
+  }else if( translations.isEmpty ){
+    print('Error: fr.json file is empty. Exiting...');
+    print('Usage: menosi langify to generate fr.json');
+    return;
+  }
   final pubspecPath = '${projectDir.path}/pubspec.yaml';
   final appName = getAppNameFromPubspec(pubspecPath);
 

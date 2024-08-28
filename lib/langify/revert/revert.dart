@@ -68,8 +68,12 @@ String removeSingleQuotes(String input) {
   return input;
 }
 
-Map<String, String> loadTranslations(String pathToJson) {
-  final file = File(pathToJson);
-  final jsonContent = file.readAsStringSync();
-  return Map<String, String>.from(jsonDecode(jsonContent));
+Map<String, String>? loadTranslations(String pathToJson) {
+  try {
+    final file = File(pathToJson);
+    final jsonContent = file.readAsStringSync();
+    return Map<String, String>.from(jsonDecode(jsonContent));
+  } catch (e) {
+    return null;
+  }
 }

@@ -30,7 +30,7 @@ class Main extends StatelessWidget {
             initialRoute: initialRoute,
             getPages: Get.find<AppPages>().getAllPages(),
             theme: myTheme,
-            locale: Locale('fr'),
+            locale: const Locale('fr'), //Don't translate line
             translationsKeys: AppTranslation.translations
           );
         });

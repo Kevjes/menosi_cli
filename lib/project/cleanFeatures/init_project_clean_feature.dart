@@ -9,6 +9,8 @@ import 'package:menosi_cli/project/cleanFeatures/templates/navigation_templates/
 import 'package:menosi_cli/project/cleanFeatures/templates/navigation_templates/splash_controller_binding_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/pubspec_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/services_templates/get_storage_local_storage_services_template.dart';
+import 'package:menosi_cli/project/cleanFeatures/templates/ui_templates/custom_app_bar_template.dart';
+import 'package:menosi_cli/project/cleanFeatures/templates/ui_templates/image_component_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/utils_templates/app_colors_templates.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/utils_templates/app_constant_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/templates/utils_templates/app_dimensions_template.dart';
@@ -16,6 +18,7 @@ import 'package:menosi_cli/project/cleanFeatures/templates/utils_templates/respo
 import 'package:path/path.dart' as p;
 import 'dart:io';
 
+import '../../app/constants.dart';
 import '../../features/feature.dart';
 import '../../langify/langify.dart';
 import 'templates/main_clean_feature_template.dart';
@@ -23,13 +26,15 @@ import 'templates/services_templates/http_network_service_template.dart';
 import 'templates/services_templates/local_storage_service_template.dart';
 import 'templates/services_templates/network_service_template.dart';
 import 'templates/theme_templates/app_theme_template.dart';
+import 'templates/ui_templates/custom_button_template.dart';
+import 'templates/ui_templates/custom_text_field_template.dart';
 import 'templates/ui_templates/not_found_screen_template.dart';
 import 'templates/ui_templates/splash_controller_template.dart';
 import 'templates/ui_templates/splash_screen_template.dart';
 import 'templates/utils_templates/app_images_template.dart';
 
 void initProjectCleanFeatures() {
-  print('Init project clean features');
+  print('${green}Init project clean features');
 
   final currentDir = Directory.current;
   Directory(p.join(currentDir.path, 'lib')).deleteSync(recursive: true);
@@ -110,6 +115,16 @@ void initProjectCleanFeatures() {
   print('created $corePath/utils/app_images.dart');
   File(p.join(corePath, 'utils', 'app_responsive.dart')).writeAsStringSync(responsiveTemplate());
   print('created $corePath/utils/app_responsive.dart');
+
+  File(p.join(corePath, 'ui', 'widgets', 'custom_app_bar.dart')).writeAsStringSync(customAppBarTemplate());
+  print('created $corePath/ui/widgets/custom_app_bar.dart');
+  File(p.join(corePath, 'ui', 'widgets', 'custom_button.dart')).writeAsStringSync(customButtonTemplate());
+  print('created $corePath/ui/widgets/custom_button.dart');
+  File(p.join(corePath, 'ui', 'widgets', 'custom_text_field.dart')).writeAsStringSync(customTextFieldTemplate());
+  print('created $corePath/ui/widgets/custom_text_field.dart');
+  File(p.join(corePath, 'ui', 'widgets', 'image_component.dart')).writeAsStringSync(imageComponentTemplate());
+  print('created $corePath/ui/widgets/image_component.dart');
+  
 
 
   File(p.join(corePath, 'ui', 'screens', 'notFoundScreen', 'not_found_screen.dart')).writeAsStringSync(notFoundScreenTemplate());

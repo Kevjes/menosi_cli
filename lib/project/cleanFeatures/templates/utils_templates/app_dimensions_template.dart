@@ -19,9 +19,12 @@ class AppDimensions {
   static const double fontSizeLarge = 20.0;
   static const double fontSizeExtraLarge = 24.0;
 
+  static const double s8 = 8.0;
+  static const double s12 = 12.0;
   static const double s16 = 16.0;
   static const double s32 = 32.0;
   static const double s50 = 50.0;
+  static const double s80 = 80.0;
   static const double s100 = 100.0;
   static const double s150 = 150.0;
   static const double s200 = 200.0;

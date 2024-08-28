@@ -44,20 +44,6 @@ class ${capitalize(featureName)}Pages implements FeaturePages {
 ''';
 }
 
-String injectionTemplate(String featureName) {
-  return '''
-//import 'package:get/get.dart';
-//import '../ui/$featureName/controllers/${convertToSnakeCase(featureName)}_controller.dart';
-
-class ${capitalize(featureName)}Dependencies {
-  static void init() {
-    // Get.Put(${capitalize(featureName)}Controller(Get.find()));
-    // Add other dependencies here
-  }
-}
-''';
-}
-
 String testTemplate(String featureName) {
   return '''
 //Don't translate me

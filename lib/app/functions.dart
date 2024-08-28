@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 String convertToSnakeCase(String input) {
   if (RegExp(r'^[a-z]+(_[a-z]+)*$').hasMatch(input)) {
@@ -36,4 +39,13 @@ String transformToLowerCamelCase(String input) {
   words[0] = words[0][0].toLowerCase() + words[0].substring(1);
 
   return words.join('');
+}
+
+bool fileExists(String path) {
+  return File(path).existsSync();
+}
+
+Map<String, dynamic> readJson(String path) {
+  final file = File(path);
+  return jsonDecode(file.readAsStringSync());
 }

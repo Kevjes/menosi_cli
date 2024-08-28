@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:args/args.dart';
+import 'package:menosi_cli/app/constants.dart';
 import 'package:menosi_cli/features/feature.dart';
 import 'package:menosi_cli/langify/revert/langify_revert.dart';
+import 'package:menosi_cli/langify/revert/revert.dart';
+import 'package:menosi_cli/licences/licence.dart';
 import 'package:menosi_cli/pages/page.dart';
 
 // Importez le script langify ici, supposant que vous l'avez placé dans lib/langify.dart
@@ -11,54 +16,85 @@ void main(List<String> arguments) {
   final parser = ArgParser();
 
   // Sub-command for creating a feature
-  parser
-      .addCommand('create')
-      .addOption('feature', abbr: 'n', help: 'Name of the feature');
-
-  // Sub-command for creating a page within a feature
-  parser.addCommand('create_page')
-    ..addOption('name', abbr: 'n', help: 'Name of the page')
-    ..addOption('feature', abbr: 'f', help: 'Name of the feature for the page');
+  parser.addCommand('create')
+    ..addOption('feature', abbr: 'n', help: 'Name of the feature')
+    ..addOption('page', abbr: 'p', help: 'Name of the page');
 
   // Sub-command for langify
-  parser.addCommand('langify').addFlag('revert',
-      abbr: 'r', negatable: false, help: 'Revert the changes made by langify');
+  parser.addCommand('langify')
+    ..addFlag('revert',
+        abbr: 'r', negatable: false, help: 'Revert the changes made by langify')
+    ..addFlag('update',
+        abbr: 'u',
+        negatable: false,
+        help: 'Update the translations in the files');
 
   // Sub-command for init project
   parser.addCommand('init');
 
   final results = parser.parse(arguments);
 
+  // Vérifier la licence avant toute autre action
+  // final encryptedKey =
+  //     'CBoaDQIQAgceGg8dFAkMDBEOECEZCxgMBiAUFQwKFhg='; // Obtenu de l'utilisateur
+
+  // final decryptedLicense = decryptLicenseKey(encryptedKey);
+
+  // if (!isLicenseValid(decryptedLicense)) {
+  //   print("Invalid or expired license. Exiting...");
+  //   return;
+  // }
+
   if (results.command?.name == 'create') {
     final featureName = results.command?['feature'];
-    if (featureName == null) {
+    final pageName = results.command?['page'];
+    if ((featureName == null && pageName == null) ||
+        (pageName != null && featureName == null)) {
       print('Usage: menosi create --feature <feature_name>');
+      print('Usage: menosi create --page <page_name> --feature <feature_name>');
+      return;
+    } else if (pageName != null && featureName != null) {
+      createPage(featureName, pageName);
       return;
     }
     createFeature(featureName);
+    return;
   } else if (results.command?.name == 'init') {
-    initProjectCleanFeatures();
-  } else if (results.command?.name == 'create_page') {
-    final pageName = results.command?['name'];
-    final featureName = results.command?['feature'];
-    if (pageName == null || featureName == null) {
-      print(
-          'Usage: menosi create_page --name <page_name> --feature <feature_name>');
-      return;
+    stdout.write(
+        'Attention : Cette opération peut écraser vos fichiers existants. Êtes-vous sûr de vouloir continuer ? (oui/non): ');
+    final response = stdin.readLineSync()?.toLowerCase().trim();
+
+    if (response == 'oui' || response == 'yes') {
+      initProjectCleanFeatures();
+      print('Projet initialisé avec succès.${reset}');
+    } else {
+      print('${red}Opération annulée.${reset}');
     }
-    createPage(featureName, pageName);
+    return;
   } else if (results.command?.name == 'langify') {
     final revert = results.command!['revert'] as bool;
+    final update = results.command!['update'] as bool;
+    if (update) {
+      mainLangifyRevert();
+      mainLangifyCommand();
+      return;
+    }
     if (revert) {
       return mainLangifyRevert();
     }
-    mainLangifyCommand();
+    if (loadTranslations('${Directory.current.path}/assets/locales/fr.json') !=
+        null) {
+      mainLangifyRevert();
+      return mainLangifyCommand();
+    } else {
+      mainLangifyCommand();
+    }
   } else {
     print('Usage: menosi init');
     print('Usage: menosi create --feature <feature_name>');
-    print(
-        'Usage: menosi create_page --name <page_name> --feature <feature_name>');
+    print('Usage: menosi create --page <page_name> --feature <feature_name>');
     print('Usage: menosi langify');
     print('Usage: menosi langify [--revert]');
+    print('Usage: menosi langify [--update]');
   }
 }
