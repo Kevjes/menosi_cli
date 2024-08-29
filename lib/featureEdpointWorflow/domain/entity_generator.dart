@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:menosi_cli/app/constants.dart';
-
 import '../../app/functions.dart';
 
 void generateEntity(
-    Map<String, dynamic> jsonResponse, String entityName, String path) {
+    Map<String, dynamic> jsonResponse, String entityName, String path, {bool includeFromJson = false}) {
   final entityPath = '$path/domain/entities/${convertToSnakeCase(entityName)}.dart';
 
   if (!fileExists(entityPath)) {
@@ -14,29 +13,48 @@ void generateEntity(
       ..writeln();
 
     jsonResponse['data'].forEach((key, value) {
-      buffer.writeln('  final ${getType(value)} ${transformToUpperCamelCase(key)};');
+      if (value is Map) {
+        final nestedEntityName = '${capitalize(key)}';
+        buffer.writeln('  final $nestedEntityName ${transformToLowerCamelCase(key)};');
+        generateEntity({'data': value}, nestedEntityName, path, includeFromJson: includeFromJson);
+      } else if (value is List) {
+        final nestedEntityName = '${capitalize(key)}';
+        buffer.writeln('  final List<$nestedEntityName> ${transformToLowerCamelCase(key)};');
+        if (value.isNotEmpty && value.first is Map) {
+          generateEntity({'data': value.first}, nestedEntityName, path, includeFromJson: includeFromJson);
+        }
+      } else {
+        buffer.writeln('  final ${getType(value)} ${transformToLowerCamelCase(key)};');
+      }
     });
 
     buffer
       ..writeln()
       ..writeln('  const $entityName({')
-      ..writeln(jsonResponse['data']
-          .keys
-          .map((key) => '    required this.${transformToUpperCamelCase(key)},')
-          .join('\n'))
-      ..writeln('  });')
-      ..writeln()
-      ..writeln('  factory $entityName.fromJson(Map<String, dynamic> json) {')
-      ..writeln('    return $entityName(');
+      ..writeln(jsonResponse['data'].keys.map((key) {
+        return '    required this.${transformToLowerCamelCase(key)},';
+      }).join('\n'))
+      ..writeln('  });');
 
-    jsonResponse['data'].forEach((key, _) {
-      buffer.writeln('      ${transformToUpperCamelCase(key)}: json[\'$key\'],');
-    });
+    if (includeFromJson) {
+      buffer
+        ..writeln()
+        ..writeln('  factory $entityName.fromJson(Map<String, dynamic> json) {')
+        ..writeln('    return $entityName(')
+        ..writeln(jsonResponse['data'].keys.map((key) {
+          if (jsonResponse['data'][key] is Map) {
+            return '      ${transformToLowerCamelCase(key)}: ${capitalize(key)}.fromJson(json[\'$key\']),';
+          } else if (jsonResponse['data'][key] is List) {
+            return '      ${transformToLowerCamelCase(key)}: List<${capitalize(key)}>.from(json[\'$key\'].map((x) => ${capitalize(key)}.fromJson(x))),';
+          } else {
+            return '      ${transformToLowerCamelCase(key)}: json[\'$key\'],';
+          }
+        }).join('\n'))
+        ..writeln('    );')
+        ..writeln('  }');
+    }
 
-    buffer
-      ..writeln('    );')
-      ..writeln('  }')
-      ..writeln('}');
+    buffer.writeln('}');
 
     File(entityPath).writeAsStringSync(buffer.toString());
     print('${green}$entityName generated at $entityPath${reset}');

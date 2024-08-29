@@ -12,6 +12,14 @@ void createPage(String featureName, String pageName) {
   final snakeFeatureName = convertToSnakeCase(featureName);
   final snakePageName = convertToSnakeCase(pageName);
 
+  //verify if the feature exists
+  if (!Directory(p.join(currentDir, 'lib', 'features', featureName)).existsSync()) {
+    print("${red}The feature $featureName doesn't exist.");
+    print(
+        "${yellow}To create a new feature, run the command 'menosi create --feature <featureName>$reset");
+    exit(1);
+  }
+
   // Define the paths for the new page within the feature
   final pagePath =
       p.join(currentDir, 'lib', 'features', featureName, 'ui', pageName);

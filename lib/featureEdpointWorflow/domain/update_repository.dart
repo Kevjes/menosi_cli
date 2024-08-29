@@ -41,9 +41,11 @@ ${haveExceptionImport ? '' : "import '../core/exceptions/${convertToSnakeCase(fe
 import '../entities/${convertToSnakeCase(entityName)}.dart';
 
 abstract class
-""").replaceFirst('}', '  Future<Either<${capitalize(featureName)}Exception, $entityName>> $methodName(${parameters.isNotEmpty ? parameters.keys.join(', ') : ''});\n}');
+""").replaceFirst('}', '  Future<Either<${capitalize(featureName)}Exception, $entityName>> $methodName(${parameters.isNotEmpty ? parameters.entries.map((e) => '${e.value} ${e.key}').join(', ') : ''});\n}');
       file.writeAsStringSync(updatedContent);
       print('${yellow}$methodName added to repository interface${reset}');
+    }else{
+      print('${yellow}$methodName already added in repository interface${reset}');
     }
   } else {
     print('${red}$repositoryInterface not found${reset}');

@@ -1,8 +1,8 @@
 String httpNetworkServiceTemplate() {
   return '''
-import 'package:get/get.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:test/core/exceptions/base_exception.dart';
 import 'network_service.dart';
 import '../../utils/app_constants.dart';
 
@@ -61,11 +61,12 @@ class HttpNetworkService extends NetworkService {
     final body = response.body;
 
     if (statusCode < 200 || statusCode >= 400) {
-      throw Exception("Une erreur est survenue");
+      throw BaseException("Une erreur est survenue");
     }
 
     return json.decode(body);
   }
 }
+
 ''';
 }

@@ -67,7 +67,7 @@ void main(List<String> arguments) {
     return;
   } else if (results.command?.name == 'init') {
     stdout.write(
-        'Attention : Cette opération peut écraser vos fichiers existants. Êtes-vous sûr de vouloir continuer ? (oui/non): ');
+        '${red}Attention : Cette opération peut écraser vos fichiers existants. Êtes-vous sûr de vouloir continuer ? (oui/non): $yellow');
     final response = stdin.readLineSync()?.toLowerCase().trim();
 
     if (response == 'oui' || response == 'yes') {
