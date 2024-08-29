@@ -5,8 +5,13 @@ import 'package:menosi_cli/featureEdpointWorflow/domain/entity_generator.dart';
 
 import '../../app/functions.dart';
 
-void updateRepositoryImpl(String featurePath, String featureName,
-    String methodName, String entityName, Map<String, dynamic> commandJson, String endpointConstantName) {
+void updateRepositoryImpl(
+    String featurePath,
+    String featureName,
+    String methodName,
+    String entityName,
+    Map<String, dynamic> commandJson, 
+    String endpointConstantName, {bool returnValue=true}) {
   final repositoryImpl =
       '$featurePath/infrastructure/repositoriesImpl/${convertToSnakeCase(featureName)}_repository_impl.dart';
 
@@ -39,8 +44,9 @@ void updateRepositoryImpl(String featurePath, String featureName,
     final dartzImport = "import 'package:dartz/dartz.dart';\n";
     final baseExceptionImport =
         "import '../../../../core/exceptions/base_exception.dart';\n";
-    final modelImport =
-        "import '../models/${convertToSnakeCase(entityName)}_model.dart';\n";
+    final modelImport = returnValue
+        ? "import '../models/${convertToSnakeCase(entityName)}_model.dart';\n"
+        : '';
     if (!content.contains(
         'Future<Either<${capitalize(featureName)}Exception, ${entityName}Model>> $methodName')) {
       final updatedContent = content.replaceFirst("class", """
@@ -48,13 +54,13 @@ ${content.contains(baseExceptionImport) ? '' : baseExceptionImport}${content.con
 class""").replaceFirst('});', '''});
 
   @override
-  Future<Either<${capitalize(featureName)}Exception, ${entityName}Model>> $methodName(${parameters.isNotEmpty ? parameters.entries.map((e) => '${e.value} ${e.key}').join(', ') : ''}) async {
+  Future<Either<${capitalize(featureName)}Exception, ${returnValue ? "${entityName}Model" : 'bool'}>> $methodName(${parameters.isNotEmpty ? parameters.entries.map((e) => '${e.value} ${e.key}').join(', ') : ''}) async {
     try {
       final response = await networkService.${(commandJson['method'] as String).toLowerCase()}(
         ${generateUrlWithPathParams("${capitalize(featureName)}Constants.$endpointConstantName", parameters)},
         ${generateRequestBody(commandJson)}
       );
-      return Right(${entityName}Model.fromJson(response));
+      return Right(${returnValue ? "${entityName}Model.fromJson(response)" : 'true'});
     } on BaseException catch (e) {
       return Left(${transformToUpperCamelCase(featureName)}Exception(e.message));
     }
@@ -68,11 +74,12 @@ class""").replaceFirst('});', '''});
   }
 }
 
-String generateUrlWithPathParams(String urlConstantName, Map<String, String> parameters) {
+String generateUrlWithPathParams(
+    String urlConstantName, Map<String, String> parameters) {
   parameters.forEach((key, value) {
     urlConstantName = "$urlConstantName.replaceAll('{$key}', $key)";
   });
-  
+
   return urlConstantName;
 }
 

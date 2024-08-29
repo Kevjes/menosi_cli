@@ -14,6 +14,7 @@ void generateModel(
 
   if (!fileExists(modelPath)) {
     final buffer = StringBuffer()
+      ..writeln('//Don\'t translate me')
       ..writeln(
           "import '../../domain/entities/${convertToSnakeCase(endpointName)}.dart';\n")
       ..writeln('class $modelName extends $entityName {')
