@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:menosi_cli/app/constants.dart';
+import 'package:menosi_cli/featureEdpointWorflow/mainGenerateFeatureEndPointWorkflow.dart';
 import 'package:menosi_cli/features/feature.dart';
 import 'package:menosi_cli/langify/revert/langify_revert.dart';
 import 'package:menosi_cli/langify/revert/revert.dart';
@@ -28,6 +29,10 @@ void main(List<String> arguments) {
         abbr: 'u',
         negatable: false,
         help: 'Update the translations in the files');
+  // Sub-command for creating a feature
+  parser.addCommand('generate')
+    ..addOption('feature', abbr: 'f', help: 'Name of the feature')
+    ..addOption('endpoint', abbr: 'e', help: 'Name of the page');
 
   // Sub-command for init project
   parser.addCommand('init');
@@ -50,8 +55,9 @@ void main(List<String> arguments) {
     final pageName = results.command?['page'];
     if ((featureName == null && pageName == null) ||
         (pageName != null && featureName == null)) {
-      print('Usage: menosi create --feature <feature_name>');
-      print('Usage: menosi create --page <page_name> --feature <feature_name>');
+      print('${yellow}Usage: menosi create --feature <feature_name>');
+      print(
+          'Usage: menosi create --page <page_name> --feature <feature_name>${reset}');
       return;
     } else if (pageName != null && featureName != null) {
       createPage(featureName, pageName);
@@ -89,12 +95,24 @@ void main(List<String> arguments) {
     } else {
       mainLangifyCommand();
     }
+  } else if (results.command?.name == 'generate') {
+    final featureName = results.command?['feature'];
+    final endpoint = results.command?['endpoint'];
+    if (featureName == null || endpoint == null) {
+      print(
+          '${red}Usage: menosi generate --feature <feature_name> --endpoint <endpoint_name>${reset}');
+      return;
+    }
+    generateEndPointWorkflow(featureName, endpoint);
+    return;
   } else {
-    print('Usage: menosi init');
+    print('${yellow}Usage: menosi init');
     print('Usage: menosi create --feature <feature_name>');
     print('Usage: menosi create --page <page_name> --feature <feature_name>');
     print('Usage: menosi langify');
     print('Usage: menosi langify [--revert]');
-    print('Usage: menosi langify [--update]');
+    print('Usage: menosi langify [--update');
+    print(
+        'Usage: menosi generate --feature <feature_name> --endpoint <endpoint_name>${reset}');
   }
 }
