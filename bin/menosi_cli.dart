@@ -32,7 +32,8 @@ void main(List<String> arguments) {
   // Sub-command for creating a feature
   parser.addCommand('generate')
     ..addOption('feature', abbr: 'f', help: 'Name of the feature')
-    ..addOption('endpoint', abbr: 'e', help: 'Name of the page');
+    ..addOption('endpoint', abbr: 'e', help: 'Name of the endpoint')
+    ..addOption('page', abbr: 'p', help: 'Name of the page');
 
   // Sub-command for init project
   parser.addCommand('init');
@@ -100,10 +101,10 @@ void main(List<String> arguments) {
     final endpoint = results.command?['endpoint'];
     if (featureName == null || endpoint == null) {
       print(
-          '${red}Usage: menosi generate --feature <feature_name> --endpoint <endpoint_name>${reset}');
+          '${red}Usage: menosi generate --feature <feature_name> --endpoint <endpoint_name> [--page <page_name>] ${reset}');
       return;
     }
-    generateEndPointWorkflow(featureName, endpoint);
+    generateEndPointWorkflow(featureName, endpoint, results.command?['page']);
     return;
   } else {
     print('${yellow}Usage: menosi init');
@@ -113,6 +114,6 @@ void main(List<String> arguments) {
     print('Usage: menosi langify [--revert]');
     print('Usage: menosi langify [--update');
     print(
-        'Usage: menosi generate --feature <feature_name> --endpoint <endpoint_name>${reset}');
+        'Usage: menosi generate --feature <feature_name> --endpoint <endpoint_name> [--page <page_name>] ${reset}');
   }
 }

@@ -3,26 +3,25 @@ import 'dart:io';
 import 'package:menosi_cli/app/constants.dart';
 import '../../app/functions.dart';
 
-void generateEntity(
-    Map<String, dynamic> jsonResponse, String entityName, String path, {bool includeFromJson = false}) {
+void generateEntity(Map<String, dynamic> jsonResponse, String entityName, String path) {
   final entityPath = '$path/domain/entities/${convertToSnakeCase(entityName)}.dart';
 
-  if (!fileExists(entityPath)) {
-    final buffer = StringBuffer()
-      ..writeln('class $entityName {')
+  final buffer = StringBuffer();
+
+  void processEntity(String name, Map<String, dynamic> json) {
+    final entityClassName = capitalize(name);
+
+    buffer
+      ..writeln('class $entityClassName {')
       ..writeln();
 
-    jsonResponse['data'].forEach((key, value) {
+    json.forEach((key, value) {
       if (value is Map) {
-        final nestedEntityName = '${capitalize(key)}';
+        final nestedEntityName = capitalize(key);
         buffer.writeln('  final $nestedEntityName ${transformToLowerCamelCase(key)};');
-        generateEntity({'data': value}, nestedEntityName, path, includeFromJson: includeFromJson);
       } else if (value is List) {
-        final nestedEntityName = '${capitalize(key)}';
+        final nestedEntityName = capitalize(key);
         buffer.writeln('  final List<$nestedEntityName> ${transformToLowerCamelCase(key)};');
-        if (value.isNotEmpty && value.first is Map) {
-          generateEntity({'data': value.first}, nestedEntityName, path, includeFromJson: includeFromJson);
-        }
       } else {
         buffer.writeln('  final ${getType(value)} ${transformToLowerCamelCase(key)};');
       }
@@ -30,35 +29,29 @@ void generateEntity(
 
     buffer
       ..writeln()
-      ..writeln('  const $entityName({')
-      ..writeln(jsonResponse['data'].keys.map((key) {
+      ..writeln('  const $entityClassName({')
+      ..writeln(json.keys.map((key) {
         return '    required this.${transformToLowerCamelCase(key)},';
       }).join('\n'))
-      ..writeln('  });');
+      ..writeln('  });')
+      ..writeln('}')
+      ..writeln();
 
-    if (includeFromJson) {
-      buffer
-        ..writeln()
-        ..writeln('  factory $entityName.fromJson(Map<String, dynamic> json) {')
-        ..writeln('    return $entityName(')
-        ..writeln(jsonResponse['data'].keys.map((key) {
-          if (jsonResponse['data'][key] is Map) {
-            return '      ${transformToLowerCamelCase(key)}: ${capitalize(key)}.fromJson(json[\'$key\']),';
-          } else if (jsonResponse['data'][key] is List) {
-            return '      ${transformToLowerCamelCase(key)}: List<${capitalize(key)}>.from(json[\'$key\'].map((x) => ${capitalize(key)}.fromJson(x))),';
-          } else {
-            return '      ${transformToLowerCamelCase(key)}: json[\'$key\'],';
-          }
-        }).join('\n'))
-        ..writeln('    );')
-        ..writeln('  }');
-    }
-
-    buffer.writeln('}');
-
-    File(entityPath).writeAsStringSync(buffer.toString());
-    print('${green}$entityName generated at $entityPath${reset}');
+    json.forEach((key, value) {
+      if (value is Map) {
+        processEntity(key, value as Map<String, dynamic>);
+      } else if (value is List && value.isNotEmpty && value.first is Map) {
+        processEntity(key, value.first); // Recursive call for list of nested entities
+      }
+    });
   }
+
+  // Start processing the main entity
+  processEntity(entityName, jsonResponse['data']);
+
+  // Write the buffer to a single file
+  File(entityPath).writeAsStringSync(buffer.toString());
+  print('${green}$entityName and nested entities generated in $entityPath$reset');
 }
 
 String getType(dynamic jsonType) {

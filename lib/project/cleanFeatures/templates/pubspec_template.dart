@@ -18,6 +18,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_svg: ^2.0.10+1
   animated_theme_switcher: ^2.0.10
+  flutter_spinkit: ^5.2.1
   flutter: 
     sdk: flutter
 

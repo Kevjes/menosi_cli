@@ -4,15 +4,19 @@ import 'package:menosi_cli/app/constants.dart';
 import 'package:menosi_cli/featureEdpointWorflow/domain/update_feature_constant.dart';
 import 'package:menosi_cli/featureEdpointWorflow/infrastructure/update_repository_impl.dart';
 import 'package:menosi_cli/featureEdpointWorflow/more/command_file_creator.dart';
+import 'package:menosi_cli/featureEdpointWorflow/navigation/update_bindings.dart';
 
 import '../app/functions.dart';
 import 'application/generate_usecase.dart';
+import 'dependences/update_dependences.dart';
 import 'domain/entity_generator.dart';
 import 'domain/update_repository.dart';
 import 'infrastructure/generate_model.dart';
 import 'more/response_file_creator.dart';
+import 'ui/update_controller.dart';
 
-void generateEndPointWorkflow(String featureName, String endpointName) {
+void generateEndPointWorkflow(String featureName, String endpointName,
+    [String? pageName]) {
   featureName = transformToLowerCamelCase(featureName);
   endpointName = transformToLowerCamelCase(endpointName);
 
@@ -39,10 +43,11 @@ void generateEndPointWorkflow(String featureName, String endpointName) {
   final commandJson = readJson(_commandFilePath);
   final responseJson = readJson(_responseFilePath);
 
-  final entityName = transformToUpperCamelCase(responseJson['responseName']);
+  final entityName = transformToUpperCamelCase(
+      responseJson['responseName'] ?? convertToSnakeCase(endpointName));
   final methodName = endpointName;
   final endpointConstantName =
-      '${transformToLowerCamelCase(featureName)}${transformToUpperCamelCase((commandJson['method'] as String).toLowerCase())}Uri';
+      '${transformToLowerCamelCase(endpointName)}${transformToUpperCamelCase((commandJson['method'] as String).toLowerCase())}Uri';
 
   if ((responseJson['data'] as Map).isNotEmpty) {
     generateEntity(responseJson, entityName, featurePath);
@@ -58,8 +63,20 @@ void generateEndPointWorkflow(String featureName, String endpointName) {
       returnValue: (responseJson['data'] as Map).isNotEmpty);
   addEndpointToFeatureConstants(
       featureName, commandJson, featurePath, endpointConstantName);
-  generateUseCase(
-      methodName, featureName, entityName, featurePath, commandJson, returnValue: (responseJson['data'] as Map).isNotEmpty);
+  generateUseCase(methodName, featureName, entityName, featurePath, commandJson,
+      returnValue: (responseJson['data'] as Map).isNotEmpty);
+  if (pageName != null) {
+    pageName = transformToLowerCamelCase(pageName);
+    updateBinding(
+        "$featurePath/navigation/bindings/${convertToSnakeCase(pageName)}_controller_binding.dart");
+    updateEndpointDependeces(
+        "$featurePath/dependences/${convertToSnakeCase(featureName)}_dependencies.dart",
+        endpointName);
+    updateController(
+        "$featurePath/ui/$pageName/controllers/${convertToSnakeCase(pageName)}_controller.dart",
+        endpointName,
+        commandJson);
+  }
 
   // Mettre à jour le controller
   // updateController(featurePath, methodName, entityName);

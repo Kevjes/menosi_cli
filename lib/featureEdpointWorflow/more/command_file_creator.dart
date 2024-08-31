@@ -13,7 +13,7 @@ void createEndpointCommandFile(
   stdout.write('${green}HTTP Method ${yellow}(GET, POST, PUT, DELETE):$reset');
   commandJson['method'] = stdin.readLineSync()!.toUpperCase();
 
-  stdout.write('${green}Endpoint path ${yellow}(e.g., /user/{userId}):$reset');
+  stdout.write('${green}Endpoint path ${yellow}(e.g., :/auth/login:$reset');
   commandJson['url'] = stdin.readLineSync()!;
 
   final Map<String, dynamic> parameters = {};

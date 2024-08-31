@@ -2,6 +2,7 @@ import 'package:menosi_cli/app/functions.dart';
 
 String repositoryImplTemplate(String featureName) {
   return """
+//Don't translate me
 import '../../domain/repositories/${convertToSnakeCase(featureName)}_repository.dart';
 import '../../../../core/services/localServices/local_storage_service.dart';
 import '../../../../core/services/networkServices/network_service.dart';

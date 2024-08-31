@@ -20,7 +20,7 @@ void generateUseCase(String methodName, String featureName, String entityName,
       ..writeln(
           "import '../../domain/repositories/${convertToSnakeCase(featureName)}_repository.dart';")
       ..writeln(returnValue
-          ? "import '../../domain/entities/${convertToSnakeCase(entityName)}.dart'\n"
+          ? "import '../../domain/entities/${convertToSnakeCase(entityName)}.dart';\n"
           : '')
       ..writeln('class ${capitalize(methodName)}UseCase {')
       ..writeln('  final ${capitalize(featureName)}Repository repository;')

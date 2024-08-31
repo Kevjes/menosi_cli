@@ -10,8 +10,9 @@ void updateRepositoryImpl(
     String featureName,
     String methodName,
     String entityName,
-    Map<String, dynamic> commandJson, 
-    String endpointConstantName, {bool returnValue=true}) {
+    Map<String, dynamic> commandJson,
+    String endpointConstantName,
+    {bool returnValue = true}) {
   final repositoryImpl =
       '$featurePath/infrastructure/repositoriesImpl/${convertToSnakeCase(featureName)}_repository_impl.dart';
 
@@ -57,7 +58,7 @@ class""").replaceFirst('});', '''});
   Future<Either<${capitalize(featureName)}Exception, ${returnValue ? "${entityName}Model" : 'bool'}>> $methodName(${parameters.isNotEmpty ? parameters.entries.map((e) => '${e.value} ${e.key}').join(', ') : ''}) async {
     try {
       final response = await networkService.${(commandJson['method'] as String).toLowerCase()}(
-        ${generateUrlWithPathParams("${capitalize(featureName)}Constants.$endpointConstantName", parameters)},
+        ${generateUrlWithPathParams("${capitalize(featureName)}Constants.$endpointConstantName", commandJson)},
         ${generateRequestBody(commandJson)}
       );
       return Right(${returnValue ? "${entityName}Model.fromJson(response)" : 'true'});
@@ -75,20 +76,25 @@ class""").replaceFirst('});', '''});
 }
 
 String generateUrlWithPathParams(
-    String urlConstantName, Map<String, String> parameters) {
-  parameters.forEach((key, value) {
-    urlConstantName = "$urlConstantName.replaceAll('{$key}', $key)";
-  });
-
+    String urlConstantName, Map<String, dynamic> commandJson) {
+  if (commandJson.containsKey('parameters') &&
+      commandJson['parameters'].containsKey('query')) {
+    final queries = commandJson['parameters']['query'];
+    String params = "";
+    queries.forEach((key, value) {
+      params = "$params/\$$key";
+    });
+    urlConstantName = '"\${$urlConstantName}$params"';
+  }
   return urlConstantName;
 }
 
 String generateRequestBody(Map<String, dynamic> commandJson) {
   final buffer = StringBuffer();
 
-  if (commandJson['method'] == 'POST' ||
-      commandJson['method'] == 'PUT' ||
-      commandJson['method'] == 'PATCH') {
+  if (commandJson['method'].toUpperCase() == 'POST' ||
+      commandJson['method'].toUpperCase() == 'PUT' ||
+      commandJson['method'].toUpperCase() == 'PATCH') {
     if (commandJson['parameters']['body'] != null) {
       buffer.write('body: {');
       commandJson['parameters']['body'].forEach((key, _) {
