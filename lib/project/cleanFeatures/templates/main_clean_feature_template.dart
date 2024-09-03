@@ -12,6 +12,7 @@ import 'core/themes/app_themes.dart';
 
 void main() async {
   await AppDependency.init();
+  HttpOverrides.global = MyHttpOverrides();
   runApp(Main(AppRoutes.initialRoute));
 }
 
@@ -34,6 +35,14 @@ class Main extends StatelessWidget {
             translationsKeys: AppTranslation.translations
           );
         });
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }
 

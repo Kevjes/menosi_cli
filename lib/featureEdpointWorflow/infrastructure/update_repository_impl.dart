@@ -48,20 +48,21 @@ void updateRepositoryImpl(
     final modelImport = returnValue
         ? "import '../models/${convertToSnakeCase(entityName)}_model.dart';\n"
         : '';
+    final entityImport = "import '../../domain/entities/${convertToSnakeCase(entityName)}.dart';\n";
     if (!content.contains(
-        'Future<Either<${capitalize(featureName)}Exception, ${entityName}Model>> $methodName')) {
+        'Future<Either<${capitalize(featureName)}Exception, $entityName>> $methodName')) {
       final updatedContent = content.replaceFirst("class", """
-${content.contains(baseExceptionImport) ? '' : baseExceptionImport}${content.contains(exceptionImport) ? '' : exceptionImport}${content.contains(constantsImport) ? '' : constantsImport}${content.contains(dartzImport) ? '' : dartzImport}${content.contains(modelImport) ? '' : modelImport}
+${content.contains(entityImport) ? '' : entityImport}${content.contains(baseExceptionImport) ? '' : baseExceptionImport}${content.contains(exceptionImport) ? '' : exceptionImport}${content.contains(constantsImport) ? '' : constantsImport}${content.contains(dartzImport) ? '' : dartzImport}${content.contains(modelImport) ? '' : modelImport}
 class""").replaceFirst('});', '''});
 
   @override
-  Future<Either<${capitalize(featureName)}Exception, ${returnValue ? "${entityName}Model" : 'bool'}>> $methodName(${parameters.isNotEmpty ? parameters.entries.map((e) => '${e.value} ${e.key}').join(', ') : ''}) async {
+  Future<Either<${capitalize(featureName)}Exception, ${returnValue ? "$entityName" : 'bool'}>> $methodName(${parameters.isNotEmpty ? parameters.entries.map((e) => '${e.value} ${e.key}').join(', ') : ''}) async {
     try {
       final response = await networkService.${(commandJson['method'] as String).toLowerCase()}(
         ${generateUrlWithPathParams("${capitalize(featureName)}Constants.$endpointConstantName", commandJson)},
         ${generateRequestBody(commandJson)}
       );
-      return Right(${returnValue ? "${entityName}Model.fromJson(response)" : 'true'});
+      return Right(${returnValue ? "${entityName}Model.fromJson(response).toEntity()" : 'true'});
     } on BaseException catch (e) {
       return Left(${transformToUpperCamelCase(featureName)}Exception(e.message));
     }

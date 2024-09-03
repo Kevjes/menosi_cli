@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:menosi_cli/app/constants.dart';
 import '../../app/functions.dart';
 
@@ -29,11 +28,24 @@ void generateEntity(Map<String, dynamic> jsonResponse, String entityName, String
 
     buffer
       ..writeln()
-      ..writeln('  const $entityClassName({')
+      ..writeln('  const $entityClassName._({')
       ..writeln(json.keys.map((key) {
         return '    required this.${transformToLowerCamelCase(key)},';
       }).join('\n'))
       ..writeln('  });')
+      ..writeln()
+      ..writeln('  factory $entityClassName.create({')
+      ..writeln(json.keys.map((key) {
+        return '    required ${getType(json[key])} ${transformToLowerCamelCase(key)},';
+      }).join('\n'))
+      ..writeln('  }) {')
+      ..writeln('    // Add any validation or business logic here')
+      ..writeln('    return $entityClassName._(')
+      ..writeln(json.keys.map((key) {
+        return '      ${transformToLowerCamelCase(key)}: ${transformToLowerCamelCase(key)},';
+      }).join('\n'))
+      ..writeln('    );')
+      ..writeln('  }')
       ..writeln('}')
       ..writeln();
 

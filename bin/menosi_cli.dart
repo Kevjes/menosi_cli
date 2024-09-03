@@ -6,14 +6,13 @@ import 'package:menosi_cli/featureEdpointWorflow/mainGenerateFeatureEndPointWork
 import 'package:menosi_cli/features/feature.dart';
 import 'package:menosi_cli/langify/revert/langify_revert.dart';
 import 'package:menosi_cli/langify/revert/revert.dart';
+import 'package:menosi_cli/licences/get_api_key.dart';
 import 'package:menosi_cli/licences/licence.dart';
 import 'package:menosi_cli/pages/page.dart';
-
-// Importez le script langify ici, supposant que vous l'avez placé dans lib/langify.dart
 import 'package:menosi_cli/langify/langify.dart';
 import 'package:menosi_cli/project/cleanFeatures/init_project_clean_feature.dart';
 
-void main(List<String> arguments) {
+void main(List<String> arguments) async {
   final parser = ArgParser();
 
   // Sub-command for creating a feature
@@ -40,16 +39,10 @@ void main(List<String> arguments) {
 
   final results = parser.parse(arguments);
 
-  // Vérifier la licence avant toute autre action
-  // final encryptedKey =
-  //     'CBoaDQIQAgceGg8dFAkMDBEOECEZCxgMBiAUFQwKFhg='; // Obtenu de l'utilisateur
-
-  // final decryptedLicense = decryptLicenseKey(encryptedKey);
-
-  // if (!isLicenseValid(decryptedLicense)) {
-  //   print("Invalid or expired license. Exiting...");
-  //   return;
-  // }
+  while (!(await isLicenseValid())) {
+    print("${red}Invalid or expired license. Exiting...$reset");
+    exit(1);
+  }
 
   if (results.command?.name == 'create') {
     final featureName = results.command?['feature'];

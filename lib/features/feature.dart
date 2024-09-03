@@ -41,9 +41,13 @@ void createFeature(String featureName) {
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'domain', 'repositories'))
       .createSync(recursive: true);
+  Directory(p.join(featurePath, 'domain', 'localStorage'))
+      .createSync(recursive: true);
   Directory(p.join(featurePath, 'infrastructure', 'models'))
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'infrastructure', 'repositoriesImpl'))
+      .createSync(recursive: true);
+  Directory(p.join(featurePath, 'infrastructure', 'localStorageImpl'))
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'ui', featureName)).createSync(recursive: true);
   Directory(p.join(featurePath, 'ui', featureName, 'controllers'))
@@ -88,7 +92,8 @@ void createFeature(String featureName) {
       '${green}created ${featurePath}/navigation/${snakeFeatureName}_pages.dart${reset}');
   File(p.join(
           featurePath, 'dependences', '${snakeFeatureName}_dependencies.dart'))
-      .writeAsStringSync(featureDependencesTemplate(featureName, snakeFeatureName));
+      .writeAsStringSync(
+          featureDependencesTemplate(featureName, snakeFeatureName));
   print(
       '${green}created ${featurePath}/dependences/${snakeFeatureName}_dependencies.dart${reset}');
   File(p.join(featurePath, 'domain', 'core', 'exceptions',
@@ -106,11 +111,19 @@ void createFeature(String featureName) {
       .writeAsStringSync(repositoryTemplate(featureName));
   print(
       '${green}created ${featurePath}/domain/repositories/${snakeFeatureName}_repository.dart${reset}');
+  File(p.join(featurePath, 'domain', 'localStorage',
+      '${snakeFeatureName}_local_storage.dart'));
+  print('${green}created ${featurePath}/domain/localStorage/${snakeFeatureName}_local_storage.dart${reset}');
   File(p.join(featurePath, 'infrastructure', 'repositoriesImpl',
           '${snakeFeatureName}_repository_impl.dart'))
       .writeAsStringSync(repositoryImplTemplate(featureName));
   print(
       '${green}created ${featurePath}/infrastructure/repositoriesImpl/${snakeFeatureName}_repository_impl.dart${reset}');
+  File(p.join(featurePath, 'infrastructure', 'localStorageImpl',
+          '${snakeFeatureName}_local_storage_impl.dart'))
+      .writeAsStringSync(repositoryImplTemplate(featureName));
+  print(
+      '${green}created ${featurePath}/infrastructure/localStorageImpl/${snakeFeatureName}_local_storage_impl.dart${reset}');
 
   // Create test file
   Directory(testFeaturePath).createSync(recursive: true);
