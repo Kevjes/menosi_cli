@@ -14,14 +14,9 @@ Future<bool> getExpirationDate() async {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final expirationDate = DateTime.parse(data['date_expiration']);
-
-      // Convertir la date en chaîne et ensuite en binaire
       final expirationDateString = expirationDate.toIso8601String();
       final encodedDate = encryptString(expirationDateString);
-      final file = File('licence.dat');
-
-      await file.writeAsString(encodedDate);
-
+      await saveLicenceFile(encodedDate);
       print('${green}Licence saved successfully!$reset');
 
       return isLicenseValid();

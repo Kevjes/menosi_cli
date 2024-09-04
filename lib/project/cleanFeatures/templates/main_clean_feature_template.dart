@@ -2,6 +2,7 @@ import 'package:menosi_cli/app/functions.dart';
 
 String mainCleanFeaturesTemplate(String projectPath) {
   return '''
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';

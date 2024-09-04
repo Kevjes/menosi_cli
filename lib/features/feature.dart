@@ -11,6 +11,8 @@ import 'package:menosi_cli/features/updates/update_global_routes.dart';
 import 'package:menosi_cli/pages/pages_templates.dart';
 import 'package:path/path.dart' as p;
 
+import 'templates/feature_locale_storage.dart';
+import 'templates/feature_storage_impl_template.dart';
 import 'templates/features_templates.dart';
 import 'templates/repository_template.dart';
 
@@ -112,8 +114,10 @@ void createFeature(String featureName) {
   print(
       '${green}created ${featurePath}/domain/repositories/${snakeFeatureName}_repository.dart${reset}');
   File(p.join(featurePath, 'domain', 'localStorage',
-      '${snakeFeatureName}_local_storage.dart'));
-  print('${green}created ${featurePath}/domain/localStorage/${snakeFeatureName}_local_storage.dart${reset}');
+          '${snakeFeatureName}_local_storage.dart'))
+      .writeAsStringSync(localStorageTemplate(featureName));
+  print(
+      '${green}created ${featurePath}/domain/localStorage/${snakeFeatureName}_local_storage.dart${reset}');
   File(p.join(featurePath, 'infrastructure', 'repositoriesImpl',
           '${snakeFeatureName}_repository_impl.dart'))
       .writeAsStringSync(repositoryImplTemplate(featureName));
@@ -121,7 +125,7 @@ void createFeature(String featureName) {
       '${green}created ${featurePath}/infrastructure/repositoriesImpl/${snakeFeatureName}_repository_impl.dart${reset}');
   File(p.join(featurePath, 'infrastructure', 'localStorageImpl',
           '${snakeFeatureName}_local_storage_impl.dart'))
-      .writeAsStringSync(repositoryImplTemplate(featureName));
+      .writeAsStringSync(localStorageImplTemplate(featureName));
   print(
       '${green}created ${featurePath}/infrastructure/localStorageImpl/${snakeFeatureName}_local_storage_impl.dart${reset}');
 
