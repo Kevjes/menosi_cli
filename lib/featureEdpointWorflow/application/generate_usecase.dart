@@ -12,22 +12,6 @@ void generateUseCase(String methodName, String featureName, String entityName,
       '$path/application/usecases/${convertToSnakeCase(methodName)}_usecase.dart';
 
   if (!fileExists(useCasePath)) {
-    final buffer = StringBuffer()
-      ..writeln('//Don\'t translate me')
-      ..writeln('import \'package:dartz/dartz.dart\';')
-      ..writeln(
-          'import \'../../domain/core/exceptions/${convertToSnakeCase(featureName)}_exception.dart\';')
-      ..writeln(
-          "import '../../domain/repositories/${convertToSnakeCase(featureName)}_repository.dart';")
-      ..writeln(returnValue
-          ? "import '../../domain/entities/${convertToSnakeCase(entityName)}.dart';\n"
-          : '')
-      ..writeln('class ${capitalize(methodName)}UseCase {')
-      ..writeln('  final ${capitalize(featureName)}Repository repository;')
-      ..writeln()
-      ..writeln('  ${capitalize(methodName)}UseCase(this.repository);')
-      ..writeln();
-
     // Extraire les paramètres d'entrée depuis le JSON
     final parameters = <String, String>{};
 
@@ -46,27 +30,32 @@ void generateUseCase(String methodName, String featureName, String entityName,
             MapEntry<String, String>(key as String, getType(value))));
       }
     }
+    final buffer = StringBuffer()
+      ..writeln('//Don\'t translate me')
+      ..writeln(parameters.isNotEmpty
+          ? "import '${convertToSnakeCase(entityName)}_command.dart';"
+          : '')
+      ..writeln('import \'package:dartz/dartz.dart\';')
+      ..writeln(
+          'import \'../../domain/core/exceptions/${convertToSnakeCase(featureName)}_exception.dart\';')
+      ..writeln(
+          "import '../../domain/repositories/${convertToSnakeCase(featureName)}_repository.dart';")
+      ..writeln(returnValue
+          ? "import '../../domain/entities/${convertToSnakeCase(entityName)}.dart';\n"
+          : '')
+      ..writeln('class ${capitalize(methodName)}UseCase {')
+      ..writeln('  final ${capitalize(featureName)}Repository repository;')
+      ..writeln()
+      ..writeln('  ${capitalize(methodName)}UseCase(this.repository);')
+      ..writeln();
 
     // Générer la signature de la méthode `call`
-    buffer.write(
-        '  Future<Either<${capitalize(featureName)}Exception, ${returnValue ? entityName : 'bool'}>> call(');
-    if (parameters.isNotEmpty) {
-      buffer.write(parameters.entries
-          .map((e) => '${e.value} ${transformToLowerCamelCase(e.key)}')
-          .join(', '));
-    }
-    buffer.writeln(') async {');
+    buffer.writeln(
+        '  Future<Either<${capitalize(featureName)}Exception, ${returnValue ? entityName : 'bool'}>> call(${parameters.keys.isNotEmpty ? "${capitalize(entityName)}Command command" : ""}) async {');
 
     // Générer l'appel au repository
-    buffer.write('    return await repository.$methodName(');
-    if (parameters.isNotEmpty) {
-      buffer.write(parameters.keys
-          .map((e) => transformToLowerCamelCase(e))
-          .toList()
-          .join(', '));
-    }
-    buffer.writeln(');');
-
+    buffer.write(
+        '    return await repository.$methodName(${parameters.keys.isNotEmpty ? parameters.keys.map((key) => '        command.${transformToLowerCamelCase(key)}').join(',\n') : ""});');
     buffer
       ..writeln('  }')
       ..writeln('}');

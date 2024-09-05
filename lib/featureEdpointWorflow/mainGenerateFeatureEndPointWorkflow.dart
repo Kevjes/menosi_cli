@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:menosi_cli/app/constants.dart';
+import 'package:menosi_cli/featureEdpointWorflow/application/generate_command.dart';
 import 'package:menosi_cli/featureEdpointWorflow/domain/update_feature_constant.dart';
 import 'package:menosi_cli/featureEdpointWorflow/infrastructure/update_repository_impl.dart';
 import 'package:menosi_cli/featureEdpointWorflow/more/command_file_creator.dart';
@@ -65,10 +66,13 @@ void generateEndPointWorkflow(String featureName, String endpointName,
       featureName, commandJson, featurePath, endpointConstantName);
   generateUseCase(methodName, featureName, entityName, featurePath, commandJson,
       returnValue: (responseJson['data'] as Map).isNotEmpty);
+
+  generateCommand(commandJson, entityName, featurePath);
+
   if (pageName != null) {
     pageName = transformToLowerCamelCase(pageName);
-    updateBinding(
-        "$featurePath/navigation/bindings/${convertToSnakeCase(pageName)}_controller_binding.dart");
+    // updateBinding(
+    //     "$featurePath/navigation/bindings/${convertToSnakeCase(pageName)}_controller_binding.dart");
     updateEndpointDependeces(
         "$featurePath/dependences/${convertToSnakeCase(featureName)}_dependencies.dart",
         endpointName);

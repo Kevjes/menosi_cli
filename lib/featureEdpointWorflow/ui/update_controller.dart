@@ -39,21 +39,23 @@ void updateController(String controllerPath, String endpointName,
       "import 'package:$appName/core/utils/getx_extensions.dart';\n";
 
   String updateContent = content.replaceFirst("class", """
-${!content.contains(extensionPath)? extensionPath : ""}import '../../../application/useCases/${convertToSnakeCase(endpointName)}_usecase.dart';
-
-class""").replaceFirst("{", """{
-  final ${capitalize(useCaseVariableName)} _$useCaseVariableName;
-""").replaceFirst("this._appNavigation", """this._appNavigation, this._$useCaseVariableName""");
+${!content.contains(extensionPath) ? extensionPath : ""}import '../../../application/useCases/${convertToSnakeCase(endpointName)}_usecase.dart';
+${parameters.keys.isNotEmpty ? "import '../../../application/useCases/${convertToSnakeCase(endpointName)}_command.dart';" : ''}
+class""").replaceFirst(");", """);
+  final ${capitalize(useCaseVariableName)} _$useCaseVariableName = Get.find();
+""");
   file.writeAsStringSync(updateContent);
   // Construct the method to be added
   final methodBuffer = StringBuffer()
     ..writeln('  Future<void> $methodName() async {')
     ..writeln('    Get.showLoader();')
-    ..writeln('    final result = await _$useCaseVariableName.call(')
+    ..writeln(
+        '    final result = await _$useCaseVariableName.call(${parameters.keys.isNotEmpty ? '${capitalize(endpointName)}Command(' : ''}')
     ..writeln(parameters.keys
-        .map((key) => '      ${transformToLowerCamelCase(key)}')
-        .join(', '))
-    ..writeln('    );')
+        .map((key) =>
+            '      ${transformToLowerCamelCase(key)} : ${transformToLowerCamelCase(key)}')
+        .join(',\n'))
+    ..writeln('    ${parameters.keys.isNotEmpty ? ')' : ''});')
     ..writeln('    result.fold(')
     ..writeln('      (e) {')
     ..writeln('         Get.closeLoader();')
