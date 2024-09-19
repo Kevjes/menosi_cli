@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:encrypt/encrypt.dart';
 import 'package:crypto/crypto.dart';
 import 'package:menosi_cli/licences/get_api_key.dart';
-import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import '../app/constants.dart';

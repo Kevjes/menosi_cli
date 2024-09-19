@@ -26,19 +26,8 @@ String transformToUpperCamelCase(String input) {
 }
 
 String transformToLowerCamelCase(String input) {
-  if (RegExp(r'^[a-z]+([A-Z][a-z]+)*$').hasMatch(input)) {
-    // Le texte est déjà sous le format "bonjourTomaTabo"
-    return input;
-  }
-
-  List<String> words = input.split('_').map((word) {
-    return word[0].toUpperCase() + word.substring(1).toLowerCase();
-  }).toList();
-
-  // La première lettre du premier mot reste en minuscule
-  words[0] = words[0][0].toLowerCase() + words[0].substring(1);
-
-  return words.join('');
+  final text = transformToUpperCamelCase(input);
+  return text[0].toLowerCase() + text.substring(1);
 }
 
 bool fileExists(String path) {

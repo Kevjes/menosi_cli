@@ -2,21 +2,26 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:menosi_cli/app/constants.dart';
-import 'package:menosi_cli/featureEdpointWorflow/mainGenerateFeatureEndPointWorkflow.dart';
-import 'package:menosi_cli/features/feature.dart';
+import 'package:menosi_cli/project/cleanFeatures/featureEdpointWorflow/mainGenerateFeatureEndPointWorkflow.dart';
+import 'package:menosi_cli/project/cleanFeatures/features/feature.dart';
 import 'package:menosi_cli/langify/revert/langify_revert.dart';
 import 'package:menosi_cli/langify/revert/revert.dart';
-import 'package:menosi_cli/licences/get_api_key.dart';
 import 'package:menosi_cli/licences/licence.dart';
-import 'package:menosi_cli/pages/page.dart';
+import 'package:menosi_cli/project/cleanFeatures/features/remove_feature.dart';
+import 'package:menosi_cli/project/cleanFeatures/pages/page.dart';
 import 'package:menosi_cli/langify/langify.dart';
-import 'package:menosi_cli/project/cleanFeatures/init_project_clean_feature.dart';
+import 'package:menosi_cli/project/cleanFeatures/init/init_project_clean_feature.dart';
+import 'package:menosi_cli/project/cleanFeatures/pages/remove_page.dart';
 
 void main(List<String> arguments) async {
   final parser = ArgParser();
 
   // Sub-command for creating a feature
   parser.addCommand('create')
+    ..addOption('feature', abbr: 'n', help: 'Name of the feature')
+    ..addOption('page', abbr: 'p', help: 'Name of the page');
+  // Sub-command for remove a feature
+  parser.addCommand('remove')
     ..addOption('feature', abbr: 'n', help: 'Name of the feature')
     ..addOption('page', abbr: 'p', help: 'Name of the page');
 
@@ -99,7 +104,22 @@ void main(List<String> arguments) async {
     }
     generateEndPointWorkflow(featureName, endpoint, results.command?['page']);
     return;
-  } else {
+  } else if (results.command?.name == 'remove') {
+    final featureName = results.command?['feature'];
+    final pageName = results.command?['page'];
+    if ((featureName == null && pageName == null) ||
+        (pageName != null && featureName == null)) {
+      print('${yellow}Usage: menosi remove --feature <feature_name>');
+      print(
+          'Usage: menosi remove --page <page_name> --feature <feature_name>${reset}');
+      return;
+    } else if (pageName != null && featureName != null) {
+      removePage(featureName, pageName);
+      return;
+    }
+    removeFeature(featureName);
+    return;
+  }else {
     print('${yellow}Usage: menosi init');
     print('Usage: menosi create --feature <feature_name>');
     print('Usage: menosi create --page <page_name> --feature <feature_name>');
@@ -108,5 +128,7 @@ void main(List<String> arguments) async {
     print('Usage: menosi langify [--update');
     print(
         'Usage: menosi generate --feature <feature_name> --endpoint <endpoint_name> [--page <page_name>] ${reset}');
+    print('Usage: menosi remove --feature <feature_name>');
+    print('Usage: menosi remove --page <page_name> --feature <feature_name>');
   }
 }
