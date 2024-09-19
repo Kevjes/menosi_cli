@@ -16,11 +16,12 @@ String convertToSnakeCase(String input) {
 
 String transformToUpperCamelCase(String input) {
   if (RegExp(r'^[A-Z][a-z]+([A-Z][a-z]+)*$').hasMatch(input)) {
-    // Le texte est déjà sous le format "BonjourTomaTabo"
     return input;
   }
-
   return input.split('_').map((word) {
+    if (RegExp(r'^[A-Z][a-z]+([A-Z][a-z]+)*$').hasMatch(word)) {
+      return word;
+    }
     return word[0].toUpperCase() + word.substring(1).toLowerCase();
   }).join('');
 }
