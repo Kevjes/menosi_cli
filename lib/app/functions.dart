@@ -4,10 +4,8 @@ import 'dart:io';
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 String convertToSnakeCase(String input) {
   if (RegExp(r'^[a-z]+(_[a-z]+)*$').hasMatch(input)) {
-    // Le texte est déjà sous le format "bonjour_toma_tabo"
     return input;
   }
-
   final regex = RegExp(r'(?<!^)(?=[A-Z])');
   return input
       .replaceAllMapped(regex, (match) => "_${match.group(0)}")
@@ -22,7 +20,7 @@ String transformToUpperCamelCase(String input) {
     if (RegExp(r'^[A-Z][a-z]+([A-Z][a-z]+)*$').hasMatch(word)) {
       return word;
     }
-    return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    return word != '' ? word[0].toUpperCase() + word.substring(1) : '';
   }).join('');
 }
 

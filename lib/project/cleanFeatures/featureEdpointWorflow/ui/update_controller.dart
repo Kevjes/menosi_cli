@@ -39,7 +39,7 @@ void updateController(String controllerPath, String endpointName,
       "import 'package:$appName/core/utils/getx_extensions.dart';\n";
 
   String updateContent = content.replaceFirst("class", """
-${!content.contains(extensionPath) ? extensionPath : ""}import '../../../application/useCases/${convertToSnakeCase(endpointName)}_usecase.dart';
+${!content.contains(extensionPath) ? extensionPath : ""}import '../../../application/usecases/${convertToSnakeCase(endpointName)}_usecase.dart';
 ${parameters.keys.isNotEmpty ? "import '../../../application/usecases/${convertToSnakeCase(endpointName)}_command.dart';" : ''}
 class""").replaceFirst(");", """);
   final ${capitalize(useCaseVariableName)} _$useCaseVariableName = Get.find();

@@ -8,7 +8,6 @@ import '../../../../app/functions.dart';
 void updateRepositoryImpl(
     String featurePath,
     String featureName,
-    String methodName,
     String entityName,
     Map<String, dynamic> commandJson,
     String endpointConstantName,
@@ -50,13 +49,13 @@ void updateRepositoryImpl(
         : '';
     final entityImport = "import '../../domain/entities/${convertToSnakeCase(entityName)}.dart';\n";
     if (!content.contains(
-        'Future<Either<${capitalize(featureName)}Exception, $entityName>> $methodName')) {
+        'Future<Either<${capitalize(featureName)}Exception, $entityName>> $entityName')) {
       final updatedContent = content.replaceFirst("class", """
 ${content.contains(entityImport) ? '' : entityImport}${content.contains(baseExceptionImport) ? '' : baseExceptionImport}${content.contains(exceptionImport) ? '' : exceptionImport}${content.contains(constantsImport) ? '' : constantsImport}${content.contains(dartzImport) ? '' : dartzImport}${content.contains(modelImport) ? '' : modelImport}
 class""").replaceFirst('});', '''});
 
   @override
-  Future<Either<${capitalize(featureName)}Exception, ${returnValue ? "$entityName" : 'bool'}>> $methodName(${parameters.isNotEmpty ? parameters.entries.map((e) => '${e.value} ${e.key}').join(', ') : ''}) async {
+  Future<Either<${capitalize(featureName)}Exception, ${returnValue ? "$entityName" : 'bool'}>> ${transformToLowerCamelCase(entityName)}(${parameters.isNotEmpty ? parameters.entries.map((e) => '${e.value} ${e.key}').join(', ') : ''}) async {
     try {
       final response = await networkService.${(commandJson['method'] as String).toLowerCase()}(
         ${generateUrlWithPathParams("${capitalize(featureName)}Constants.$endpointConstantName", commandJson)},
@@ -69,7 +68,7 @@ class""").replaceFirst('});', '''});
   }
 ''');
       file.writeAsStringSync(updatedContent);
-      print('${yellow}$methodName added to repository implementation${reset}');
+      print('${yellow}$entityName added to repository implementation${reset}');
     }
   } else {
     print('${red}$repositoryImpl not found${reset}');

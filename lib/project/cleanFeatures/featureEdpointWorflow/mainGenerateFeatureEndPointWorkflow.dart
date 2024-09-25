@@ -34,18 +34,15 @@ void generateEndPointWorkflow(String featureName, String endpointName,
   }
 
   if (!fileExists(_responseFilePath)) {
-    print('${red}Response file not found in $_responseFilePath${reset}');
+    print('${red}Response file not found in $_responseFilePath$reset');
     print(
-        '${blue}Starting creating Response file for $endpointName on $featureName${reset}');
+        '${blue}Starting creating Response file for $endpointName on $featureName$reset');
     createEndpointResponseFile(featureName, endpointName, _responseFilePath);
   }
 
   final commandJson = readJson(_commandFilePath);
   final responseJson = readJson(_responseFilePath);
-
-  final entityName = transformToUpperCamelCase(
-      responseJson['responseName'] ?? convertToSnakeCase(endpointName));
-  final methodName = endpointName;
+  final entityName = transformToUpperCamelCase(endpointName);
   final endpointConstantName =
       '${transformToLowerCamelCase(endpointName)}${transformToUpperCamelCase((commandJson['method'] as String).toLowerCase())}Uri';
 
@@ -56,14 +53,14 @@ void generateEndPointWorkflow(String featureName, String endpointName,
     generateModel(responseJson, entityName, featurePath);
   }
   updateRepository(
-      featurePath, featureName, methodName, entityName, commandJson,
+      featurePath, featureName, entityName, commandJson,
       returnValue: (responseJson['data'] as Map).isNotEmpty);
-  updateRepositoryImpl(featurePath, featureName, methodName, entityName,
+  updateRepositoryImpl(featurePath, featureName, entityName,
       commandJson, endpointConstantName,
       returnValue: (responseJson['data'] as Map).isNotEmpty);
   addEndpointToFeatureConstants(
       featureName, commandJson, featurePath, endpointConstantName);
-  generateUseCase(methodName, featureName, entityName, featurePath, commandJson,
+  generateUseCase(featureName, entityName, featurePath, commandJson,
       returnValue: (responseJson['data'] as Map).isNotEmpty);
 
   generateCommand(commandJson, entityName, featurePath);
