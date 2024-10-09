@@ -1,10 +1,7 @@
 String notFoundScreenTemplate() {
   return '''
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../../navigation/routes/app_routes.dart';
-import '../../../utils/app_dimensions.dart';
-
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({super.key});
 
@@ -23,9 +20,9 @@ class NotFoundScreen extends StatelessWidget {
               const Icon(
                 Icons.error_outline,
                 color: Colors.red,
-                size: AppDimensions.s100,
+                size: 100,
               ),
-              const SizedBox(height: AppDimensions.s16),
+              const SizedBox(height: 16),
                Text(
                 "404",
                 style: TextStyle(

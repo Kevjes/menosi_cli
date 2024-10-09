@@ -18,16 +18,13 @@ Future<bool> getExpirationDate() async {
       final encodedDate = encryptString(expirationDateString);
       await saveLicenceFile(encodedDate);
       print('${green}Licence saved successfully!$reset');
-
       return isLicenseValid();
     } else {
-      print(
-          '${red}Failed to load expiration date. Status code: ${response.statusCode}$reset');
+      print('${red}Failed to load expiration date. Status code: ${response.statusCode}$reset');
       return false;
     }
   } catch (e) {
-    print(
-        '${red}Error occurred. Please check your internet connection or your licence key:$yellow $e$reset');
+    print('${red}Error occurred. Please check your internet connection or your licence key:$yellow \n----------\n$reset');
     return false;
   }
 }

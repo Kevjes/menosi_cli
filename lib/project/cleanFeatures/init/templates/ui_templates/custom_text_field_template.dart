@@ -43,9 +43,9 @@ class CustomFormField extends StatefulWidget {
     this.borderColor = AppColors.grey,
     this.enabledBorderColor = AppColors.grey,
     this.focusedBorderColor = AppColors.primary,
-    this.fontSize = AppDimensions.fontSizeSmall,
+    this.fontSize = 12,
     this.labelColor = Colors.black,
-    this.contentPadding = const EdgeInsets.all(AppDimensions.s12),
+    this.contentPadding = const EdgeInsets.all(12),
   }) : super(key: key);
 
   @override
@@ -74,7 +74,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
                 .bodySmall
                 ?.copyWith(color: AppColors.grey),
           ),
-        if (widget.label != null) const SizedBox(height: AppDimensions.s8),
+        if (widget.label != null) const SizedBox(height: 8),
         TextFormField(
           controller: widget.controller,
           obscureText: _obscureText,
@@ -132,5 +132,6 @@ class _CustomFormFieldState extends State<CustomFormField> {
     );
   }
 }
+
 ''';
 }

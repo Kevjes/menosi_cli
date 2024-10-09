@@ -5,7 +5,6 @@ import 'package:menosi_cli/project/cleanFeatures/featureEdpointWorflow/applicati
 import 'package:menosi_cli/project/cleanFeatures/featureEdpointWorflow/domain/update_feature_constant.dart';
 import 'package:menosi_cli/project/cleanFeatures/featureEdpointWorflow/infrastructure/update_repository_impl.dart';
 import 'package:menosi_cli/project/cleanFeatures/featureEdpointWorflow/more/command_file_creator.dart';
-
 import '../../../app/functions.dart';
 import 'application/generate_usecase.dart';
 import 'dependences/update_dependences.dart';
@@ -47,10 +46,10 @@ void generateEndPointWorkflow(String featureName, String endpointName,
       '${transformToLowerCamelCase(endpointName)}${transformToUpperCamelCase((commandJson['method'] as String).toLowerCase())}Uri';
 
   if ((responseJson['data'] as Map).isNotEmpty) {
-    generateEntity(responseJson, entityName, featurePath);
+    generateEntity(responseJson['data'], entityName, featurePath);
   }
   if ((responseJson['data'] as Map).isNotEmpty) {
-    generateModel(responseJson, entityName, featurePath);
+    generateModel(responseJson['data'], entityName, featurePath);
   }
   updateRepository(
       featurePath, featureName, entityName, commandJson,

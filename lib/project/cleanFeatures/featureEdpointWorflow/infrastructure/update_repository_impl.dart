@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:menosi_cli/app/constants.dart';
-import 'package:menosi_cli/project/cleanFeatures/featureEdpointWorflow/domain/entity_generator.dart';
-
 import '../../../../app/functions.dart';
+import '../functions.dart';
 
 void updateRepositoryImpl(
     String featurePath,
@@ -16,23 +14,7 @@ void updateRepositoryImpl(
       '$featurePath/infrastructure/repositoriesImpl/${convertToSnakeCase(featureName)}_repository_impl.dart';
 
   entityName = capitalize(entityName);
-  final parameters = <String, String>{};
-
-  if (commandJson.containsKey('parameters')) {
-    final params = commandJson['parameters'];
-    if (params.containsKey('path')) {
-      parameters.addAll(params['path'].map<String, String>((key, value) =>
-          MapEntry<String, String>(key as String, getType(value))));
-    }
-    if (params.containsKey('query')) {
-      parameters.addAll(params['query'].map<String, String>((key, value) =>
-          MapEntry<String, String>(key as String, getType(value))));
-    }
-    if (params.containsKey('body')) {
-      parameters.addAll(params['body'].map<String, String>((key, value) =>
-          MapEntry<String, String>(key as String, getType(value))));
-    }
-  }
+  final parameters = analyseParametters(commandJson);
 
   if (fileExists(repositoryImpl)) {
     final file = File(repositoryImpl);
@@ -79,7 +61,7 @@ String generateUrlWithPathParams(
     String urlConstantName, Map<String, dynamic> commandJson) {
   if (commandJson.containsKey('parameters') &&
       commandJson['parameters'].containsKey('query')) {
-    final queries = commandJson['parameters']['query'];
+    final queries = analyseParametters(commandJson);
     String params = "";
     queries.forEach((key, value) {
       params = "$params/\$$key";
@@ -97,7 +79,7 @@ String generateRequestBody(Map<String, dynamic> commandJson) {
       commandJson['method'].toUpperCase() == 'PATCH') {
     if (commandJson['parameters']['body'] != null) {
       buffer.write('body: {');
-      commandJson['parameters']['body'].forEach((key, _) {
+      analyseParametters(commandJson).forEach((key, _) {
         buffer.write('\'$key\': $key, ');
       });
       buffer.write('},');

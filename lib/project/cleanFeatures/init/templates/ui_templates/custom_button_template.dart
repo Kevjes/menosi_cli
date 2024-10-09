@@ -3,7 +3,7 @@ String customButtonTemplate() {
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_dimensions.dart';
+import '../../utils/app_dimensions.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -24,8 +24,8 @@ class CustomButton extends StatelessWidget {
     this.color = AppColors.primary,
     this.textColor = Colors.white,
     required this.onPressed,
-    this.width = AppDimensions.s200,
-    this.height = AppDimensions.s50,
+    this.width = 200,
+    this.height = 50,
     this.borderRadius = const BorderRadius.all(Radius.circular(AppDimensions.radiusSmall)),
     this.suffixIcon,
     this.strech = true,
@@ -60,7 +60,7 @@ class CustomButton extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
-                      ?.copyWith(color: textColor, fontSize: AppDimensions.fontSizeMedium),
+                      ?.copyWith(color: textColor, fontSize: 16),
                 ),
               ),
             ),
@@ -68,7 +68,7 @@ class CustomButton extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const SizedBox(width: AppDimensions.s8),
+                  const SizedBox(width: 8),
                   suffixIcon!,
                 ],
               ),

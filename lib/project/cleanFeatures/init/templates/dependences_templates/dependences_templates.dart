@@ -9,7 +9,7 @@ import '../navigation/routes/app_pages.dart';
 import '../navigation/routes/app_routes.dart';
 import '../services/localServices/get_storage_local_storage_service.dart';
 import '../services/localServices/local_storage_service.dart';
-import '../services/networkServices/http_network_service.dart';
+import '../services/networkServices/dio_network_service.dart';
 import '../services/networkServices/network_service.dart';
 
 class AppDependency {
@@ -31,7 +31,7 @@ class AppDependency {
     //initialize Views
 
     // Réseau
-    Get.lazyPut<NetworkService>(() => HttpNetworkService(), fenix: true);
+    Get.lazyPut<NetworkService>(() => DioNetworkService(), fenix: true);
 
     // Stockage local
     Get.lazyPut<LocalStorageService>(() => GetStorageService(), fenix: true);

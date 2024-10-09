@@ -12,7 +12,6 @@ dependencies:
   get: 4.6.6
   get_storage: 2.1.1
   dartz: 0.10.1
-  http: ^1.2.2
   shimmer: ^3.0.0
   cached_network_image: ^3.4.0
   google_fonts: ^6.2.1
@@ -20,6 +19,12 @@ dependencies:
   animated_theme_switcher: ^2.0.10
   flutter_spinkit: ^5.2.1
   responsive_framework: ^1.5.1
+  dio: ^5.7.0
+  talker_dio_logger: ^4.4.1
+  dio_cache_interceptor: ^3.5.0
+  talker: ^4.4.1
+  dio_cache_interceptor_file_store: ^1.2.3
+
   flutter: 
     sdk: flutter
 

@@ -9,9 +9,6 @@ import 'package:menosi_cli/project/cleanFeatures/features/updates/update_depende
 import 'package:menosi_cli/project/cleanFeatures/features/updates/update_global_routes.dart';
 import 'package:menosi_cli/project/cleanFeatures/pages/pages_templates.dart';
 import 'package:path/path.dart' as p;
-
-import 'templates/feature_locale_storage.dart';
-import 'templates/feature_storage_impl_template.dart';
 import 'templates/features_templates.dart';
 import 'templates/repository_template.dart';
 
@@ -42,14 +39,14 @@ void createFeature(String featureName) {
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'domain', 'repositories'))
       .createSync(recursive: true);
-  Directory(p.join(featurePath, 'domain', 'localStorage'))
-      .createSync(recursive: true);
+  // Directory(p.join(featurePath, 'domain', 'localStorage'))
+  //     .createSync(recursive: true);
   Directory(p.join(featurePath, 'infrastructure', 'models'))
       .createSync(recursive: true);
   Directory(p.join(featurePath, 'infrastructure', 'repositoriesImpl'))
       .createSync(recursive: true);
-  Directory(p.join(featurePath, 'infrastructure', 'localStorageImpl'))
-      .createSync(recursive: true);
+  // Directory(p.join(featurePath, 'infrastructure', 'localStorageImpl'))
+  //     .createSync(recursive: true);
   Directory(p.join(featurePath, 'ui', featureName)).createSync(recursive: true);
   Directory(p.join(featurePath, 'ui', featureName, 'controllers'))
       .createSync(recursive: true);
@@ -112,21 +109,21 @@ void createFeature(String featureName) {
       .writeAsStringSync(repositoryTemplate(featureName));
   print(
       '${green}created ${featurePath}/domain/repositories/${snakeFeatureName}_repository.dart${reset}');
-  File(p.join(featurePath, 'domain', 'localStorage',
-          '${snakeFeatureName}_local_storage.dart'))
-      .writeAsStringSync(localStorageTemplate(featureName));
-  print(
-      '${green}created ${featurePath}/domain/localStorage/${snakeFeatureName}_local_storage.dart${reset}');
+  // File(p.join(featurePath, 'domain', 'localStorage',
+  //         '${snakeFeatureName}_local_storage.dart'))
+  //     .writeAsStringSync(localStorageTemplate(featureName));
+  // print(
+  //     '${green}created ${featurePath}/domain/localStorage/${snakeFeatureName}_local_storage.dart${reset}');
   File(p.join(featurePath, 'infrastructure', 'repositoriesImpl',
           '${snakeFeatureName}_repository_impl.dart'))
       .writeAsStringSync(repositoryImplTemplate(featureName));
   print(
       '${green}created ${featurePath}/infrastructure/repositoriesImpl/${snakeFeatureName}_repository_impl.dart${reset}');
-  File(p.join(featurePath, 'infrastructure', 'localStorageImpl',
-          '${snakeFeatureName}_local_storage_impl.dart'))
-      .writeAsStringSync(localStorageImplTemplate(featureName));
-  print(
-      '${green}created ${featurePath}/infrastructure/localStorageImpl/${snakeFeatureName}_local_storage_impl.dart${reset}');
+  // File(p.join(featurePath, 'infrastructure', 'localStorageImpl',
+  //         '${snakeFeatureName}_local_storage_impl.dart'))
+  //     .writeAsStringSync(localStorageImplTemplate(featureName));
+  // print(
+  //     '${green}created ${featurePath}/infrastructure/localStorageImpl/${snakeFeatureName}_local_storage_impl.dart${reset}');
 
   // Create test file
   Directory(testFeaturePath).createSync(recursive: true);

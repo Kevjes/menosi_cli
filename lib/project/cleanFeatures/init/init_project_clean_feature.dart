@@ -8,7 +8,9 @@ import 'package:menosi_cli/project/cleanFeatures/init/templates/navigation_templ
 import 'package:menosi_cli/project/cleanFeatures/init/templates/navigation_templates/getx_navigation_impl.dart';
 import 'package:menosi_cli/project/cleanFeatures/init/templates/navigation_templates/splash_controller_binding_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/init/templates/pubspec_template.dart';
+import 'package:menosi_cli/project/cleanFeatures/init/templates/services_templates/form_helper.dart';
 import 'package:menosi_cli/project/cleanFeatures/init/templates/services_templates/get_storage_local_storage_services_template.dart';
+import 'package:menosi_cli/project/cleanFeatures/init/templates/services_templates/validators.dart';
 import 'package:menosi_cli/project/cleanFeatures/init/templates/ui_templates/custom_app_bar_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/init/templates/ui_templates/image_component_template.dart';
 import 'package:menosi_cli/project/cleanFeatures/init/templates/ui_templates/loading_widget_template.dart';
@@ -18,12 +20,11 @@ import 'package:menosi_cli/project/cleanFeatures/init/templates/utils_templates/
 import 'package:menosi_cli/project/cleanFeatures/init/templates/utils_templates/get_extension_template.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
-
 import '../../../app/constants.dart';
 import '../features/feature.dart';
 import '../../../langify/langify.dart';
 import 'templates/main_clean_feature_template.dart';
-import 'templates/services_templates/http_network_service_template.dart';
+import 'templates/services_templates/dio_network_services_template.dart';
 import 'templates/services_templates/local_storage_service_template.dart';
 import 'templates/services_templates/network_service_template.dart';
 import 'templates/theme_templates/app_theme_template.dart';
@@ -60,6 +61,8 @@ void initProjectCleanFeatures() {
   Directory(p.join(corePath, 'ui', 'screens', 'notFoundScreen')).createSync(recursive: true);
   Directory(p.join(corePath, 'ui', 'screens', 'splashScreen', 'controllers')).createSync(recursive: true);
   Directory(p.join(corePath, 'ui', 'widgets')).createSync(recursive: true);
+  Directory(p.join(corePath, 'ui', 'interfaces')).createSync(recursive: true);
+  Directory(p.join(corePath, 'services', 'form')).createSync(recursive: true);
   Directory(p.join(corePath, 'services', 'localServices')).createSync(recursive: true);
   Directory(p.join(corePath, 'services', 'networkServices')).createSync(recursive: true);
   Directory(p.join(corePath, 'themes')).createSync(recursive: true);
@@ -97,10 +100,14 @@ void initProjectCleanFeatures() {
   print('created $corePath/services/localServices/get_storage_local_storage_service.dart');
   File(p.join(corePath, 'services', 'localServices', 'local_storage_service.dart')).writeAsStringSync(localStorageServiceTemplate());
   print('created $corePath/services/localServices/local_storage_service.dart');
-  File(p.join(corePath, 'services', 'networkServices', 'http_network_service.dart')).writeAsStringSync(httpNetworkServiceTemplate());
-  print('created $corePath/services/networkServices/http_network_service.dart');
+  File(p.join(corePath, 'services', 'networkServices', 'dio_network_service.dart')).writeAsStringSync(dioNetworkServiceTemplate());
+  print('created $corePath/services/networkServices/dio_network_service.dart');
   File(p.join(corePath, 'services', 'networkServices', 'network_service.dart')).writeAsStringSync(networkServiceTemplate());
   print('created $corePath/services/networkServices/network_service.dart');
+    File(p.join(corePath, 'services', 'form', 'form_helper.dart')).writeAsStringSync(formHeperTemplate());
+  print('created $corePath/services/form/form_helper.dart');
+    File(p.join(corePath, 'services', 'form', 'validators.dart')).writeAsStringSync(validatorsTemplate);
+  print('created $corePath/services/form/validators.dart');
 
   File(p.join(corePath, 'themes', 'app_themes.dart')).writeAsStringSync(appThemeTemplate());
   print('created $corePath/themes/app_theme.dart');
@@ -118,6 +125,8 @@ void initProjectCleanFeatures() {
   File(p.join(corePath, 'utils', 'getx_extensions.dart')).writeAsStringSync(getExtensionTemplate());
   print('created $corePath/utils/getx_extensions.dart');
 
+  File(p.join(corePath, 'ui', 'interfaces', 'feature_widget_interface.dart')).writeAsStringSync(loadingWidgetTemplate());
+  print('created $corePath/ui/interfaces/feature_widget_interface.dart');
   File(p.join(corePath, 'ui', 'widgets', 'custom_app_bar.dart')).writeAsStringSync(customAppBarTemplate());
   print('created $corePath/ui/widgets/custom_app_bar.dart');
   File(p.join(corePath, 'ui', 'widgets', 'custom_button.dart')).writeAsStringSync(customButtonTemplate());

@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:menosi_cli/app/constants.dart';
-import 'package:menosi_cli/project/cleanFeatures/featureEdpointWorflow/domain/entity_generator.dart';
-
 import '../../../../app/functions.dart';
+import '../functions.dart';
 
 void updateRepository(String featurePath, String featureName,
     String entityName, commandJson, {bool returnValue=true}) {
@@ -11,23 +9,7 @@ void updateRepository(String featurePath, String featureName,
       '$featurePath/domain/repositories/${convertToSnakeCase(featureName)}_repository.dart';
   entityName = capitalize(entityName);
 
-  final parameters = <String, String>{};
-
-  if (commandJson.containsKey('parameters')) {
-    final params = commandJson['parameters'];
-    if (params.containsKey('path')) {
-      parameters.addAll(params['path'].map<String, String>((key, value) =>
-          MapEntry<String, String>(key as String, getType(value))));
-    }
-    if (params.containsKey('query')) {
-      parameters.addAll(params['query'].map<String, String>((key, value) =>
-          MapEntry<String, String>(key as String, getType(value))));
-    }
-    if (params.containsKey('body')) {
-      parameters.addAll(params['body'].map<String, String>((key, value) =>
-          MapEntry<String, String>(key as String, getType(value))));
-    }
-  }
+  final parameters = analyseParametters(commandJson);
 
   if (fileExists(repositoryInterface)) {
     final file = File(repositoryInterface);

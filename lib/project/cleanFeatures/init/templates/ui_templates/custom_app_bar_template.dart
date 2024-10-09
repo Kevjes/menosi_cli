@@ -3,7 +3,6 @@ String customAppBarTemplate() {
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../utils/app_colors.dart';
-import '../../utils/app_dimensions.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -33,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   // TODO: implement preferredSize
-  Size get preferredSize => Size(Get.width, AppDimensions.s80);
+  Size get preferredSize => Size(Get.width,80);
 }
 
 ''';

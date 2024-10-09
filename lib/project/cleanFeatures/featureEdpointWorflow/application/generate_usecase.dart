@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:menosi_cli/app/constants.dart';
 import 'package:menosi_cli/app/functions.dart';
 
-import '../domain/entity_generator.dart';
+import '../functions.dart';
+
 
 void generateUseCase( String featureName, String entityName,
     String path, Map<String, dynamic> commandJson,
@@ -13,23 +13,7 @@ void generateUseCase( String featureName, String entityName,
 
   if (!fileExists(useCasePath)) {
     // Extraire les paramètres d'entrée depuis le JSON
-    final parameters = <String, String>{};
-
-    if (commandJson.containsKey('parameters')) {
-      final params = commandJson['parameters'];
-      if (params.containsKey('path')) {
-        parameters.addAll(params['path'].map<String, String>((key, value) =>
-            MapEntry<String, String>(key as String, getType(value))));
-      }
-      if (params.containsKey('query')) {
-        parameters.addAll(params['query'].map<String, String>((key, value) =>
-            MapEntry<String, String>(key as String, getType(value))));
-      }
-      if (params.containsKey('body')) {
-        parameters.addAll(params['body'].map<String, String>((key, value) =>
-            MapEntry<String, String>(key as String, getType(value))));
-      }
-    }
+    final parameters = analyseParametters(commandJson);
     final buffer = StringBuffer()
       ..writeln('//Don\'t translate me')
       ..writeln(parameters.isNotEmpty
@@ -55,7 +39,7 @@ void generateUseCase( String featureName, String entityName,
 
     // Générer l'appel au repository
     buffer.write(
-        '    return await repository.${transformToLowerCamelCase(entityName)}(${parameters.keys.isNotEmpty ? parameters.keys.map((key) => '        command.${transformToLowerCamelCase(key)}').join(',\n') : ""});');
+        '    return await repository.${transformToLowerCamelCase(entityName)}(${parameters.keys.isNotEmpty ? parameters.keys.map((key) => 'command.${transformToLowerCamelCase(key)}').join(',') : ""});');
     buffer
       ..writeln('  }')
       ..writeln('}');

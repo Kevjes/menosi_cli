@@ -1,28 +1,15 @@
 import 'dart:io';
 import 'package:menosi_cli/app/constants.dart';
 import 'package:menosi_cli/app/functions.dart';
-
 import '../../../../langify/langify.dart';
-import '../domain/entity_generator.dart';
+import '../functions.dart';
 
 void updateController(String controllerPath, String endpointName,
     Map<String, dynamic> commandJson) {
   final file = File(controllerPath);
 
   // Extraire les paramètres d'entrée depuis le JSON
-  final parameters = <String, String>{};
-
-  if (commandJson.containsKey('parameters')) {
-    final params = commandJson['parameters'];
-    if (params.containsKey('query')) {
-      parameters.addAll(params['query'].map<String, String>((key, value) =>
-          MapEntry<String, String>(key as String, getType(value))));
-    }
-    if (params.containsKey('body')) {
-      parameters.addAll(params['body'].map<String, String>((key, value) =>
-          MapEntry<String, String>(key as String, getType(value))));
-    }
-  }
+  final parameters = analyseParametters(commandJson);
 
   if (!file.existsSync()) {
     print('${red}Controller file not found at $controllerPath$reset');

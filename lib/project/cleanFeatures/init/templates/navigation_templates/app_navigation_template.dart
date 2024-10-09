@@ -3,10 +3,10 @@ String appNavigationTemplate() {
 import 'package:flutter/material.dart';
 
 abstract class AppNavigation {
-  Future<void>? toNamed(String routeName, {dynamic arguments});
-  Future<void>? to(Widget page, {dynamic arguments});
-  Future<void>? toNamedAndReplace(String routeName, {dynamic arguments});
-  Future<void>? toNamedAndReplaceAll(String routeName, {dynamic arguments});
+  Future<T?>? toNamed<T>(String routeName, {dynamic arguments});
+  Future<T?>? to<T>(Widget page, {dynamic arguments});
+  Future<T?>? toNamedAndReplace<T>(String routeName, {dynamic arguments});
+  Future<T?>? toNamedAndReplaceAll<T>(String routeName, {dynamic arguments});
   void goBack<T>({T? result});
 }
 

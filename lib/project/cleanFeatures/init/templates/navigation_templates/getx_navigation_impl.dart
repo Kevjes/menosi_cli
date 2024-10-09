@@ -2,7 +2,6 @@ String getxNavigationImplTemplate(){
   return '''
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../dependences/app_dependences.dart';
 import 'app_navigation.dart';
 
 class GetXNavigationImpl implements AppNavigation {
@@ -10,40 +9,38 @@ class GetXNavigationImpl implements AppNavigation {
   GetXNavigationImpl(this.notFoundPage);
 
   @override
-  Future<void>? toNamed(String routeName, {dynamic arguments}) {
+  Future<T?>? toNamed<T>(String routeName, {dynamic arguments}) {
     try {
-      return Get.toNamed(routeName, arguments: arguments);
+      return Get.toNamed<T>(routeName, arguments: arguments);
     } catch (e) {
-      return Get.toNamed(notFoundPage, arguments: arguments);
+      return Get.toNamed<T>(notFoundPage, arguments: arguments);
     }
   }
 
   @override
-  Future<void>? to(Widget page, {dynamic arguments}) {
+  Future<T?>? to<T>(Widget page, {dynamic arguments}) {
     try {
-      return Get.to(page, arguments: arguments);
+      return Get.to<T>(page, arguments: arguments);
     } catch (e) {
-      return Get.toNamed(notFoundPage, arguments: arguments);
+      return Get.toNamed<T>(notFoundPage, arguments: arguments);
     }
   }
 
   @override
-  Future<void>? toNamedAndReplace(String routeName, {dynamic arguments}) {
+  Future<T?>? toNamedAndReplace<T>(String routeName, {dynamic arguments}) {
     try {
-      return Get.offNamed(routeName, arguments: arguments);
+      return Get.offNamed<T>(routeName, arguments: arguments);
     } catch (e) {
-      return Get.toNamed(notFoundPage, arguments: arguments);
+      return Get.toNamed<T>(notFoundPage, arguments: arguments);
     }
   }
 
   @override
-
-  Future<void>? toNamedAndReplaceAll(String routeName, {dynamic arguments}) {
+  Future<T?>? toNamedAndReplaceAll<T>(String routeName, {dynamic arguments}) {
     try {
-      Get.offAllNamed(routeName, arguments: arguments);
-      return AppDependency.init();
+      return Get.offAllNamed<T>(routeName, arguments: arguments);
     } catch (e) {
-      return Get.toNamed(notFoundPage, arguments: arguments);
+      return Get.toNamed<T>(notFoundPage, arguments: arguments);
     }
   }
 

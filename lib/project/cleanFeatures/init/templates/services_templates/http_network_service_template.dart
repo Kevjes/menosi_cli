@@ -3,7 +3,7 @@ String httpNetworkServiceTemplate() {
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:speedara_driver/core/exceptions/base_exception.dart';
+import '../../exceptions/base_exception.dart';
 import '../../utils/app_constants.dart';
 import 'network_service.dart';
 
