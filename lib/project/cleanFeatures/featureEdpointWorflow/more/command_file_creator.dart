@@ -10,49 +10,56 @@ void createEndpointCommandFile(
   print(
       '${green}Please enter the information to create the endpoint_command.json file');
 
-  stdout.write('${green}HTTP Method ${yellow}(GET, POST, PUT, DELETE):$reset');
+  stdout.write('${green}HTTP Method $yellow(GET, POST, PUT, DELETE):$reset');
   commandJson['method'] = stdin.readLineSync()!.toUpperCase();
 
-  stdout.write('${green}Endpoint path ${yellow}(e.g., :/auth/login:$reset');
+  stdout.write('${green}Endpoint path $yellow(e.g., /auth/login):$reset');
   commandJson['url'] = stdin.readLineSync()!;
 
   final Map<String, dynamic> parameters = {};
 
-  stdout.write('${green}Are there any query parameters? ${yellow}(y/n):$reset');
+  // Collecte des paramètres de requête
+  stdout.write('${green}Are there any query parameters? $yellow(y/n):$reset');
   if (stdin.readLineSync()!.toLowerCase().contains('y')) {
-    final Map<String, String> queryParams = {};
-    String addMore;
-    do {
-      stdout.write('${green}Parameter name ${yellow}(e.g., search):$reset');
-      String paramName = stdin.readLineSync()!;
-      stdout
-          .write('${green}Parameter type ${yellow}(string, int, etc.):$reset');
-      String paramType = stdin.readLineSync()!;
-      queryParams[paramName] = paramType;
-
-      stdout
-          .write('${green}Add another query parameter? ${yellow}(y/n):$reset');
-      addMore = stdin.readLineSync()!;
-    } while (addMore.toLowerCase().contains('y'));
+    final Map<String, dynamic> queryParams = {};
+    stdout.write(
+        '${green}Enter parameter list name $yellow(e.g.:  userId, orderId, zoneId):$reset');
+    String paramsName = stdin.readLineSync()!;
+    paramsName.split(',').map((e) => queryParams[e.trim()] = e.trim()).toList();
     parameters['query'] = queryParams;
   }
 
-  stdout.write('${green}Is there a request body? ${yellow}(y/n):$reset');
+  // Collecte du corps de la requête en JSON
+  stdout.write('${green}Is there a request body? $yellow(y/n):$reset');
   if (stdin.readLineSync()!.toLowerCase().contains('y')) {
-    final Map<String, dynamic> bodyParams = {};
-    String addMore;
-    do {
-      stdout.write('${green}Field name ${yellow}(e.g., username):$reset');
-      String fieldName = stdin.readLineSync()!;
-      stdout.write('${green}Field type ${yellow}(string, int, double, bool, etc.):$reset');
-      String fieldType = stdin.readLineSync()!;
-      bodyParams[fieldName] = _getValue(fieldType);
+    print(
+        '${blue}Please paste the request body JSON. Type "END" on a new line to finish:$reset');
 
-      stdout.write(
-          '${green}Add another field to the request body? ${yellow}(y/n):$reset');
-      addMore = stdin.readLineSync()!;
-    } while (addMore.toLowerCase().contains('y'));
-    parameters['body'] = bodyParams;
+    // Collecte du JSON multi-lignes
+    StringBuffer jsonRequestBodyBuffer = StringBuffer();
+    String? line;
+    while ((line =
+                stdin.readLineSync(encoding: Encoding.getByName('utf-8')!)) !=
+            null &&
+        line?.toUpperCase().trim() != 'END') {
+      jsonRequestBodyBuffer.writeln(line?.trim());
+    }
+
+    String jsonRequestBody = jsonRequestBodyBuffer.toString().trim();
+
+    try {
+      // Nettoyage du JSON
+      jsonRequestBody = jsonRequestBody.replaceAll(RegExp(r',\s*}'), '}');
+      jsonRequestBody = jsonRequestBody.replaceAll(RegExp(r',\s*]'), ']');
+
+      Map<String, dynamic> bodyParams = jsonDecode(jsonRequestBody);
+
+      parameters['body'] = bodyParams;
+    } catch (e) {
+      print('${red}Error: The pasted request body is not valid JSON.$reset');
+      print(e.toString());
+      return;
+    }
   }
 
   commandJson['parameters'] = parameters;
@@ -61,16 +68,4 @@ void createEndpointCommandFile(
   File(commandFilePath).writeAsStringSync(jsonEncode(commandJson));
   print(
       '${green}The endpoint_command.json file has been successfully created at $commandFilePath$reset');
-}
-
-dynamic _getValue(String field) {
-  return field.toLowerCase().contains('string')
-      ? "String"
-      : field.toLowerCase().contains('int')
-          ? 12
-          : field.toLowerCase().contains('double')
-              ? 100.0
-              : field.toLowerCase().contains('bool')
-                  ? false
-                  : null;
 }

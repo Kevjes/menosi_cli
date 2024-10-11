@@ -11,7 +11,7 @@ void generateEntity(
   processEntity(entityName, jsonResponse, buffer);
   File(entityPath).writeAsStringSync(buffer.toString());
   print(
-      '${green}$entityName and nested entities generated in $entityPath$reset');
+      '$green$entityName and nested entities generated in $entityPath$reset');
 }
 
 void processEntity(

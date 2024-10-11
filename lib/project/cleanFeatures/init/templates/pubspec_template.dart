@@ -24,6 +24,7 @@ dependencies:
   dio_cache_interceptor: ^3.5.0
   talker: ^4.4.1
   dio_cache_interceptor_file_store: ^1.2.3
+  loading_animation_widget: ^1.3.0
 
   flutter: 
     sdk: flutter

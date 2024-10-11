@@ -74,7 +74,7 @@ void generateEndPointWorkflow(String featureName, String endpointName,
     updateController(
         "$featurePath/ui/$pageName/controllers/${convertToSnakeCase(pageName)}_controller.dart",
         endpointName,
-        commandJson);
+        commandJson, featureName: featureName, forForm: true);
   }
 
   // Mettre à jour le controller

@@ -22,7 +22,7 @@ void createEndpointResponseFile(
     while ((line =
                 stdin.readLineSync(encoding: Encoding.getByName('utf-8')!)) !=
             null &&
-        line?.trim() != 'END') {
+        line?.toUpperCase().trim() != 'END') {
       jsonResponseBuffer.writeln(line?.trim());
     }
 
